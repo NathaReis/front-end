@@ -1,12 +1,35 @@
-<div class="login-container">
-    <h2>Login</h2>
-    <form>
-      <label for="username">Usuário:</label>
-      <input type="text" id="username" name="username">
-      
-      <label for="password">Senha:</label>
-      <input type="password" id="password" name="password">
-      
-      <button type="submit">Entrar</button>
+<div class="body">
+  <p-card>
+    <ng-template pTemplate="header">
+        <img alt="Logo da Terrasa Engenharia" src="https://static.wixstatic.com/media/50c2bb_7861f0cb81a64360b019fd909d817b00~mv2.png/v1/fill/w_398,h_190,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/DQb5NoOW.png" />
+    </ng-template>
+  
+    <form (ngSubmit)="onSubmit()">
+      <div class="p-fluid">
+  
+        <div class="p-field">
+          <label for="email">Usuário:</label>
+          <input pInputText id="email" type="email" [(ngModel)]="email" name="email" required />
+        </div>
+  
+        <div class="p-field">
+          <label for="password">Senha:</label>
+          <p-password id="password" [toggleMask]="true" [(ngModel)]="password" name="password" required></p-password>
+        </div>
+  
+        <div class="p-field">
+          <p-button label="Esqueceu a senha?" [text]="true" size="small"></p-button>
+        </div>
+  
+        <div class="p-field">
+          <p-button type="submit" label="Confirmar" severity="success" [raised]="true" [rounded]="true"></p-button>
+        </div>
+  
+        <div class="p-field">
+          <p-button label="Cadastrar" severity="secondary" [raised]="true" [rounded]="true"></p-button>
+        </div>
+  
+      </div>
     </form>
-  </div>
+  </p-card>
+</div>

@@ -40,12 +40,15 @@ export class LoginComponent {
 
   async onSubmit(loginForm: NgForm) {
     if (loginForm.valid) {
-      console.log("🚀 ~ file: login.component.ts:43 ~ LoginComponent ~ onSubmit ~ this.password:", this.password);
-      console.log("🚀 ~ file: login.component.ts:43 ~ LoginComponent ~ onSubmit ~ this.email:", this.email);
-      const response = await this.loginService
-        .login(this.email, this.password)
-        .toPromise();
-      console.log(response);
+      try {
+        const response = await this.loginService.login(this.email, this.password).toPromise();
+        this.messageService.add({severity:'success', summary:'Sucesso', detail:'Login realizado com sucesso!'});
+        console.log(response);
+        // Redirecionar para outra página ou realizar outra ação
+      } catch (error) {
+        this.messageService.add({severity:'error', summary:'Erro', detail:'Login falhou. Verifique suas credenciais.'});
+        console.error(error);
+      }
     } else {
       this.messageService.add({severity:'error', summary:'Erro', detail:'Por favor, preencha o formulário corretamente.'});
     }

@@ -18,7 +18,7 @@
   
         <div class="p-field">
           <label for="password">Senha:</label>
-          <p-password id="password" [toggleMask]="true" [(ngModel)]="password" name="password" required minlength="10" autocomplete="current-password" [feedback]="false"></p-password>
+          <p-password id="password" [toggleMask]="true" [(ngModel)]="password" name="password" required minlength="8" autocomplete="current-password" [feedback]="false"></p-password>
           <div *ngIf="loginForm.submitted && loginForm.controls['password']?.errors">
             <small class="p-error" *ngIf="loginForm.controls['password']?.errors?.['required']">A senha é obrigatória.</small>
             <small class="p-error" *ngIf="loginForm.controls['password']?.errors?.['minlength']">A senha deve ter pelo menos 10 caracteres.</small>

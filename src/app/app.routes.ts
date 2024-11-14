@@ -7,7 +7,7 @@ import { RecuperarLoginComponent } from './pages/recuperar-login/recuperar-login
 import { RelatorioComponent } from './pages/relatorio/relatorio.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '', pathMatch: 'full' }, // /login
+  { path: '', redirectTo: '/login', pathMatch: 'full' }, // /login
   { path: 'cadastro', component: CadastroComponent },
   { path: 'equipamento', component: EquipamentoComponent },
   { path: 'login', component: LoginComponent },

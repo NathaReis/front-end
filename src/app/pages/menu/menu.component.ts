@@ -19,29 +19,34 @@ export class MenuComponent implements OnInit {
   ngOnInit() {
     this.items = [
       {
-        icon: 'pi pi-align-justify',
-        items: [
-          {
-            label: 'Equipamento',
-            icon: 'pi pi-cog',
-            route: '/equipamento',
-          },
-          {
-            label: 'Login',
-            icon: 'pi pi-sign-in',
-            route: '/login',
-          },
-          {
-            label: 'Recuperar Login',
-            icon: 'pi pi-key',
-            route: '/recuperar-login',
-          },
-          {
-            label: 'Relatório',
-            icon: 'pi pi-file',
-            route: '/relatorio',
-          },
-        ],
+        label: 'Ordem de Serviço',
+        icon: 'pi pi-briefcase', // Ícone de pasta de trabalho
+        route: '/ordem-servico',
+      },
+      {
+        label: 'Equipamentos',
+        icon: 'pi pi-cog', // Ícone de engrenagem
+        route: '/equipamento',
+      },
+      {
+        label: 'Usuários',
+        icon: 'pi pi-users', // Ícone de usuários
+        route: '/usuarios',
+      },
+      {
+        label: 'Relatórios',
+        icon: 'pi pi-chart-line', // Ícone de gráfico de linha
+        route: '/relatorio',
+      },
+      {
+        label: 'Notificações',
+        icon: 'pi pi-bell', // Ícone de sino
+        route: '/notificacoes',
+      },
+      {
+        label: 'Logout',
+        icon: 'pi pi-user', // Ícone de usuário
+        route: '/login',
       },
     ];
   }

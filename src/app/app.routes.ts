@@ -9,19 +9,21 @@ import { InicioComponent } from './pages/inicio/inicio.component';
 import { OrdemServicoComponent } from './pages/ordem-servico/ordem-servico.component';
 import { StatusOrdemServicoComponent } from './pages/status-ordem-servico/status-ordem-servico.component';
 import { UsuarioComponent } from './pages/usuario/usuario.component';
+import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' }, // /login 
   //juliana@user.com
   //123456Aa!
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'cadastro', component: CadastroComponent },
-  { path: 'equipamento', component: EquipamentoComponent },
-  { path: 'inicio', component: InicioComponent },
+  { path: 'equipamento', component: EquipamentoComponent, canActivate: [AuthGuard] },
+  { path: 'inicio', component: InicioComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
-  { path: 'menu', component: MenuComponent },
-  { path: 'ordem-servico', component: OrdemServicoComponent },
+  { path: 'menu', component: MenuComponent, canActivate: [AuthGuard] },
+  { path: 'ordem-servico', component: OrdemServicoComponent, canActivate: [AuthGuard] },
   { path: 'recuperar-login', component: RecuperarLoginComponent },
-  { path: 'relatorio', component: RelatorioComponent },
-  { path: 'status-ordem-servico', component: StatusOrdemServicoComponent },
-  { path: 'usuario', component: UsuarioComponent },
+  { path: 'relatorio', component: RelatorioComponent, canActivate: [AuthGuard] },
+  { path: 'status-ordem-servico', component: StatusOrdemServicoComponent, canActivate: [AuthGuard] },
+  { path: 'usuario', component: UsuarioComponent, canActivate: [AuthGuard] },
+  { path: '**', redirectTo: '/login' }
 ];

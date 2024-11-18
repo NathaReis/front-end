@@ -8,15 +8,8 @@ import { DialogModule } from "primeng/dialog";
 import { InputTextModule } from "primeng/inputtext";
 import { EquipamentoService } from "../../services/equipamento.service";
 import { ConfirmationService, MessageService } from "primeng/api";
-import { ToastModule } from 'primeng/toast';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-
-interface Item {
-  id: number;
-  number: string;
-  ownership: string;
-  qrCode: string;
-}
+import { ToastModule } from "primeng/toast";
+import { ConfirmDialogModule } from "primeng/confirmdialog";
 
 @Component({
   selector: "app-equipamento",
@@ -37,7 +30,7 @@ interface Item {
   styleUrl: "./equipamento.component.scss",
 })
 export class EquipamentoComponent {
-  dados: Item[] = [
+  dados: any[] = [
     { id: 1, number: "Equipamento 1", ownership: "Origem 1", qrCode: "QR1" },
     { id: 2, number: "Equipamento 2", ownership: "Origem 2", qrCode: "QR2" },
     { id: 3, number: "Equipamento 3", ownership: "Origem 3", qrCode: "QR3" },
@@ -46,7 +39,7 @@ export class EquipamentoComponent {
   ];
 
   displayDialog: boolean = false;
-  selectedItem: Item = { id: 0, number: "", ownership: "", qrCode: "" };
+  selectedItem: any = {};
   isEditMode: boolean = false;
   dialogTitle: string = "";
 
@@ -57,49 +50,55 @@ export class EquipamentoComponent {
   ) {}
 
   ngOnInit() {
-    this.service.list().subscribe(
-      (response) => {
-        this.dados = response;
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
+    // this.service.list().subscribe(
+    //   (response) => {
+    //     this.dados = response;
+    //   },
+    //   (error) => {
+    //     console.error(error);
+    //   }
+    // );
   }
 
-  openAddDialog(item?: Item) {
+  openAddDialog() {
     this.dialogTitle = "Adicionar Equipamento";
-    this.selectedItem = item
-      ? { ...item }
-      : { id: 0, number: "", ownership: "", qrCode: "" };
-    this.isEditMode = !!item;
+    this.selectedItem = {};
+    this.isEditMode = true;
     this.displayDialog = true;
   }
 
-  openEditDialog(item?: Item) {
-    this.dialogTitle = "Atualizar Equipamento";
-    this.selectedItem = item
-      ? { ...item }
-      : { id: 0, number: "", ownership: "", qrCode: "" };
-    this.isEditMode = !!item;
+  openEditDialog(item: any) {
+    this.dialogTitle = "Editar Equipamento";
+    this.selectedItem = { ...item };
+    this.isEditMode = false;
     this.displayDialog = true;
   }
 
   saveItem() {
     if (this.isEditMode) {
-      // Lógica para atualizar o item
-      this.dialogTitle = "Editar Equipamento";
-      console.log("Update item:", this.selectedItem);
+      this.selectedItem.id = this.dados.length + 1;
+      this.dados.push(this.selectedItem);
+      this.messageService.add({
+        severity: "success",
+        summary: "Success",
+        detail: "Item added successfully",
+      });
     } else {
-      // Lógica para adicionar um novo item
-
-      console.log("Add new item:", this.selectedItem);
+      const index = this.dados.findIndex((d) => d.id === this.selectedItem.id);
+      if (index !== -1) {
+        this.dados[index] = this.selectedItem;
+        this.messageService.add({
+          severity: "success",
+          summary: "Success",
+          detail: "Item updated successfully",
+        });
+      }
     }
     this.displayDialog = false;
   }
 
-  confirm2(event: Event) {
-    console.log("confirm2");
+  confirm2(event: Event, item: any) {
+    this.selectedItem = item;
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: "Você deseja deletar esse equipamento?",
@@ -110,6 +109,7 @@ export class EquipamentoComponent {
       acceptIcon: "none",
       rejectIcon: "none",
       accept: () => {
+        this.deleteItem(item); // Chama a função deleteItem para remover o item
         this.messageService.add({
           severity: "info",
           summary: "Confirmado",
@@ -127,8 +127,11 @@ export class EquipamentoComponent {
   }
 
   deleteItem(item: any) {
-    // Lógica para deletar o item
-    this.dados = this.dados.filter(d => d.id !== item.id);
-    this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted' });
+    this.dados = this.dados.filter((d) => d.id !== item.id);
+    this.messageService.add({
+      severity: "info",
+      summary: "Confirmed",
+      detail: "Record deleted",
+    });
   }
 }

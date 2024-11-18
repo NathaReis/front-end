@@ -3,7 +3,13 @@ import { TableModule } from "primeng/table";
 import { MenuComponent } from "../menu/menu.component";
 import { CardModule } from "primeng/card";
 import { ButtonModule } from "primeng/button";
+import { FormsModule } from "@angular/forms";
+import { DialogModule } from "primeng/dialog";
+import { InputTextModule } from "primeng/inputtext";
 import { EquipamentoService } from "../../services/equipamento.service";
+import { ConfirmationService, MessageService } from "primeng/api";
+import { ToastModule } from 'primeng/toast';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 interface Item {
   id: number;
@@ -15,7 +21,18 @@ interface Item {
 @Component({
   selector: "app-equipamento",
   standalone: true,
-  imports: [TableModule, CardModule, MenuComponent, ButtonModule],
+  imports: [
+    TableModule,
+    CardModule,
+    MenuComponent,
+    ButtonModule,
+    DialogModule,
+    FormsModule,
+    InputTextModule,
+    ToastModule,
+    ConfirmDialogModule,
+  ],
+  providers: [ConfirmationService, MessageService],
   templateUrl: "./equipamento.component.html",
   styleUrl: "./equipamento.component.scss",
 })
@@ -28,7 +45,16 @@ export class EquipamentoComponent {
     { id: 5, number: "Equipamento 5", ownership: "Origem 5", qrCode: "QR5" },
   ];
 
-  constructor(private service: EquipamentoService) {}
+  displayDialog: boolean = false;
+  selectedItem: Item = { id: 0, number: "", ownership: "", qrCode: "" };
+  isEditMode: boolean = false;
+  dialogTitle: string = "";
+
+  constructor(
+    private service: EquipamentoService,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService
+  ) {}
 
   ngOnInit() {
     this.service.list().subscribe(
@@ -41,13 +67,68 @@ export class EquipamentoComponent {
     );
   }
 
-  editItem(item: Item) {
-    // Lógica para editar o item
-    console.log('Edit item:', item);
+  openAddDialog(item?: Item) {
+    this.dialogTitle = "Adicionar Equipamento";
+    this.selectedItem = item
+      ? { ...item }
+      : { id: 0, number: "", ownership: "", qrCode: "" };
+    this.isEditMode = !!item;
+    this.displayDialog = true;
   }
 
-  deleteItem(item: Item) {
-    // Lógica para excluir o item
-    console.log('Delete item:', item);
+  openEditDialog(item?: Item) {
+    this.dialogTitle = "Atualizar Equipamento";
+    this.selectedItem = item
+      ? { ...item }
+      : { id: 0, number: "", ownership: "", qrCode: "" };
+    this.isEditMode = !!item;
+    this.displayDialog = true;
+  }
+
+  saveItem() {
+    if (this.isEditMode) {
+      // Lógica para atualizar o item
+      this.dialogTitle = "Editar Equipamento";
+      console.log("Update item:", this.selectedItem);
+    } else {
+      // Lógica para adicionar um novo item
+
+      console.log("Add new item:", this.selectedItem);
+    }
+    this.displayDialog = false;
+  }
+
+  confirm2(event: Event) {
+    console.log("confirm2");
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: "Você deseja deletar esse equipamento?",
+      header: "Confirmar exclusão",
+      icon: "pi pi-info-circle",
+      acceptButtonStyleClass: "p-button-danger p-button-text",
+      rejectButtonStyleClass: "p-button-text p-button-text",
+      acceptIcon: "none",
+      rejectIcon: "none",
+      accept: () => {
+        this.messageService.add({
+          severity: "info",
+          summary: "Confirmado",
+          detail: "Equipamento deletado",
+        });
+      },
+      reject: () => {
+        this.messageService.add({
+          severity: "error",
+          summary: "Recusado",
+          detail: "Equipamento não deletado",
+        });
+      },
+    });
+  }
+
+  deleteItem(item: any) {
+    // Lógica para deletar o item
+    this.dados = this.dados.filter(d => d.id !== item.id);
+    this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted' });
   }
 }

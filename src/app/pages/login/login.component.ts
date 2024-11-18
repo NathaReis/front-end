@@ -44,6 +44,7 @@ export class LoginComponent {
         const response = await this.loginService.login(this.email, this.password).toPromise();
         this.messageService.add({severity:'success', summary:'Sucesso', detail:'Login realizado com sucesso!'});
         console.log(response);
+        this.router.navigate(['/inicio']);
         // Redirecionar para outra página ou realizar outra ação
       } catch (error) {
         this.messageService.add({severity:'error', summary:'Erro', detail:'Login falhou. Verifique suas credenciais.'});

@@ -31,12 +31,17 @@ export class MenuComponent implements OnInit {
       {
         label: 'Usuários',
         icon: 'pi pi-users', // Ícone de usuários
-        route: '/usuarios',
+        route: '/usuario',
       },
       {
         label: 'Relatórios',
         icon: 'pi pi-chart-line', // Ícone de gráfico de linha
         route: '/relatorio',
+      },
+      {
+        label: 'Status Ordem de Serviço',
+        icon: 'pi pi-info-circle',
+        route: '/status-ordem-servico',
       },
       {
         label: 'Notificações',

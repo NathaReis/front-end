@@ -11,7 +11,9 @@ import { StatusOrdemServicoComponent } from './pages/status-ordem-servico/status
 import { UsuarioComponent } from './pages/usuario/usuario.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' }, // /login
+  { path: '', redirectTo: '/login', pathMatch: 'full' }, // /login 
+  //juliana@user.com
+  //123456Aa!
   { path: 'cadastro', component: CadastroComponent },
   { path: 'equipamento', component: EquipamentoComponent },
   { path: 'inicio', component: InicioComponent },

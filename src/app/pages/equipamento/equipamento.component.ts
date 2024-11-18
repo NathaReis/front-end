@@ -50,14 +50,14 @@ export class EquipamentoComponent {
   ) {}
 
   ngOnInit() {
-    // this.service.list().subscribe(
-    //   (response) => {
-    //     this.dados = response;
-    //   },
-    //   (error) => {
-    //     console.error(error);
-    //   }
-    // );
+    this.service.list().subscribe(
+      (response) => {
+        this.dados = response;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
   }
 
   openAddDialog() {

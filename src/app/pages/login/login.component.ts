@@ -42,20 +42,13 @@ export class LoginComponent {
     if (loginForm.valid) {
       try {
         const response = await this.loginService.login(this.email, this.password).toPromise();
-        const { acessToken, refreshToken } = response; // Supondo que a resposta contenha os tokens
+        const { acessToken, refreshToken } = response;
   
-        // Armazenar os tokens no localStorage
         localStorage.setItem('acessToken', acessToken);
         localStorage.setItem('refreshToken', refreshToken);
   
-        // Verificar se os tokens foram armazenados
-        console.log('Acess Token:', localStorage.getItem('acessToken'));
-        console.log('Refresh Token:', localStorage.getItem('refreshToken'));
-  
         this.messageService.add({severity:'success', summary:'Sucesso', detail:'Login realizado com sucesso!'});
-        console.log(response);
         this.router.navigate(['/inicio']);
-        // Redirecionar para outra página ou realizar outra ação
       } catch (error) {
         this.messageService.add({severity:'error', summary:'Erro', detail:'Login falhou. Verifique suas credenciais.'});
         console.error(error);

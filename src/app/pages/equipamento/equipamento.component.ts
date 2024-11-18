@@ -27,11 +27,9 @@ export class EquipamentoComponent {
   ) {}
 
   ngOnInit() {
-    console.log("teste")
     this.service.list().subscribe(
       (response) => {
         this.dados = response;
-        console.log("🚀 ~ file: equipamento.component.ts:33 ~ EquipamentoComponent ~ OnInit ~ response:", response);
       },
       (error) => {
         console.error(error);

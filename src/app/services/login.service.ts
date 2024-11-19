@@ -21,10 +21,8 @@ export class LoginService {
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Ocorreu um erro desconhecido.';
     if (error.error instanceof ErrorEvent) {
-      // Erro no lado do cliente
       errorMessage = `Erro: ${error.error.message}`;
     } else {
-      // Erro no lado do servidor
       errorMessage = `Erro ${error.status}: ${error.message}`;
     }
     console.error('An error occurred:', errorMessage);

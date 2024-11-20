@@ -42,6 +42,7 @@ export class EquipamentoComponent {
   dialogTitle: string = "";
   equipamentoForm: FormGroup;
   globalFilterFields: string[] = ['id', 'number', 'ownership', 'qrCode'];
+  filters: { [key: string]: string } = {};
 
   constructor(
     private fb: FormBuilder,
@@ -196,10 +197,11 @@ export class EquipamentoComponent {
 
   applyFilter(event: Event, field: string) {
     const input = event.target as HTMLInputElement;
-    if (input.value) {
-      this.dados = this.dadosOriginais.filter(item => item[field].toString().toLowerCase().includes(input.value.toLowerCase()));
-    } else {
-      this.dados = [...this.dadosOriginais]; // Restaura os dados originais
-    }
+    this.filters[field] = input.value.toLowerCase();
+    this.dados = this.dadosOriginais.filter(item => {
+      return Object.keys(this.filters).every(key => {
+        return item[key].toString().toLowerCase().includes(this.filters[key]);
+      });
+    });
   }
 }

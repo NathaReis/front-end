@@ -35,11 +35,13 @@ import { ConfirmDialogModule } from "primeng/confirmdialog";
 })
 export class EquipamentoComponent {
   dados: any[] = [];
+  dadosOriginais: any[] = [];
   displayDialog: boolean = false;
   selectedItem: any = {};
   isEditMode: boolean = false;
   dialogTitle: string = "";
   equipamentoForm: FormGroup;
+  globalFilterFields: string[] = ['id', 'number', 'ownership', 'qrCode'];
 
   constructor(
     private fb: FormBuilder,
@@ -59,6 +61,7 @@ export class EquipamentoComponent {
     this.service.list().subscribe(
       (response) => {
         this.dados = response;
+        this.dadosOriginais = [...response]; // Armazena uma cópia dos dados originais
       },
       (error) => {
         console.error(error);
@@ -69,7 +72,7 @@ export class EquipamentoComponent {
   openAddDialog() {
     this.dialogTitle = "Adicionar Equipamento";
     this.selectedItem = {};
-    this.isEditMode = true;
+    this.isEditMode = false;
     this.displayDialog = true;
     this.equipamentoForm.reset();
   }
@@ -77,7 +80,7 @@ export class EquipamentoComponent {
   openEditDialog(item: any) {
     this.dialogTitle = "Editar Equipamento";
     this.selectedItem = { ...item };
-    this.isEditMode = false;
+    this.isEditMode = true;
     this.displayDialog = true;
     this.equipamentoForm.patchValue(this.selectedItem);
   }
@@ -97,26 +100,6 @@ export class EquipamentoComponent {
 
   saveItem() {
     if (this.isEditMode) {
-      this.service.create(this.selectedItem).subscribe(
-        (response) => {
-          this.dados.push(response);
-          this.messageService.add({
-            severity: "success",
-            summary: "Sucesso",
-            detail: "Equipamento adicionado com sucesso",
-          });
-          this.displayDialog = false;
-        },
-        (error) => {
-          console.error(error);
-          this.messageService.add({
-            severity: "error",
-            summary: "Erro",
-            detail: "Erro ao adicionar equipamento",
-          });
-        }
-      );
-    } else {
       this.service.update(this.selectedItem).subscribe(
         (response) => {
           const index = this.dados.findIndex(
@@ -138,6 +121,27 @@ export class EquipamentoComponent {
             severity: "error",
             summary: "Erro",
             detail: "Erro ao atualizar equipamento",
+          });
+        }
+      );
+    } else {
+      this.service.create(this.selectedItem).subscribe(
+        (response) => {
+          this.dados.push(response);
+          this.dadosOriginais.push(response); // Atualiza os dados originais
+          this.messageService.add({
+            severity: "success",
+            summary: "Sucesso",
+            detail: "Equipamento adicionado com sucesso",
+          });
+          this.displayDialog = false;
+        },
+        (error) => {
+          console.error(error);
+          this.messageService.add({
+            severity: "error",
+            summary: "Erro",
+            detail: "Erro ao adicionar equipamento",
           });
         }
       );
@@ -172,6 +176,7 @@ export class EquipamentoComponent {
     this.service.delete(item.id).subscribe(
       () => {
         this.dados = this.dados.filter((d) => d.id !== item.id);
+        this.dadosOriginais = this.dadosOriginais.filter((d) => d.id !== item.id); // Atualiza os dados originais
         this.messageService.add({
           severity: "info",
           summary: "Confirmado",
@@ -187,5 +192,14 @@ export class EquipamentoComponent {
         });
       }
     );
+  }
+
+  applyFilter(event: Event, field: string) {
+    const input = event.target as HTMLInputElement;
+    if (input.value) {
+      this.dados = this.dadosOriginais.filter(item => item[field].toString().toLowerCase().includes(input.value.toLowerCase()));
+    } else {
+      this.dados = [...this.dadosOriginais]; // Restaura os dados originais
+    }
   }
 }

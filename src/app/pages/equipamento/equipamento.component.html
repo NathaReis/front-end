@@ -17,6 +17,7 @@
       [rows]="5"
       [rowsPerPageOptions]="[5, 10, 20]"
       [tableStyle]="{ 'min-width': '50rem' }"
+      [globalFilterFields]="['id', 'number', 'ownership', 'qrCode']"
     >
       <ng-template pTemplate="header">
         <tr>
@@ -31,6 +32,21 @@
             QR Code <p-sortIcon field="qrCode" />
           </th>
           <th>Opções</th>
+        </tr>
+        <tr>
+          <th>
+            <input pInputText type="text" (input)="applyFilter($event, 'id')" placeholder="Filtrar por ID" />
+          </th>
+          <th>
+            <input pInputText type="text" (input)="applyFilter($event, 'number')" placeholder="Filtrar por Nome" />
+          </th>
+          <th>
+            <input pInputText type="text" (input)="applyFilter($event, 'ownership')" placeholder="Filtrar por Origem" />
+          </th>
+          <th>
+            <input pInputText type="text" (input)="applyFilter($event, 'qrCode')" placeholder="Filtrar por QR Code" />
+          </th>
+          <th></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-item>

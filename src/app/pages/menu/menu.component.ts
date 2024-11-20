@@ -3,6 +3,7 @@ import { MenuItem } from 'primeng/api';
 import { MenubarModule } from 'primeng/menubar';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { AuthService } from './../../services/auth.service';
 
 @Component({
   selector: 'app-menu',
@@ -14,7 +15,10 @@ import { Router } from '@angular/router';
 export class MenuComponent implements OnInit {
   items: MenuItem[] | undefined;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
     this.items = [
@@ -57,8 +61,9 @@ export class MenuComponent implements OnInit {
   }
 
   logout() {
+    this.router.navigate(['/login']);
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
-    this.router.navigate(['/login']);
+    this.authService.logout().subscribe();
   }
 }

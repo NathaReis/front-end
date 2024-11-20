@@ -9,7 +9,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { LoginService } from '../../services/login.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -35,13 +35,13 @@ export class LoginComponent {
   constructor(
     private router: Router,
     private messageService: MessageService,
-    private loginService: LoginService
+    private AuthService: AuthService
   ) {}
 
   async onSubmit(loginForm: NgForm) {
     if (loginForm.valid) {
       try {
-        const response = await this.loginService.login(this.email, this.password).toPromise();
+        const response = await this.AuthService.login(this.email, this.password).toPromise();
         const { accessToken, refreshToken } = response;
   
         localStorage.setItem('accessToken', accessToken);

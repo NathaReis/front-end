@@ -40,7 +40,9 @@ export class LoginComponent {
 
   async onSubmit(loginForm: NgForm) {
     if (loginForm.valid) {
-      try {
+      try { //remover configurações de login
+        this.email = 'frederico@user.com';
+        this.password = '123456Aa!';
         const response = await this.AuthService.login(this.email, this.password).toPromise();
         const { accessToken, refreshToken } = response;
   

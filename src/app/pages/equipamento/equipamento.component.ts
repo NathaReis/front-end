@@ -1,9 +1,11 @@
 import { Component } from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { CommonModule } from '@angular/common';
 import { TableModule } from "primeng/table";
 import { MenuComponent } from "../menu/menu.component";
 import { CardModule } from "primeng/card";
 import { ButtonModule } from "primeng/button";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { DialogModule } from "primeng/dialog";
 import { InputTextModule } from "primeng/inputtext";
 import { EquipamentoService } from "../../services/equipamento.service";
@@ -17,10 +19,12 @@ import { ConfirmDialogModule } from "primeng/confirmdialog";
   imports: [
     TableModule,
     CardModule,
+    CommonModule,
     MenuComponent,
     ButtonModule,
     DialogModule,
     FormsModule,
+    ReactiveFormsModule,
     InputTextModule,
     ToastModule,
     ConfirmDialogModule,
@@ -29,19 +33,27 @@ import { ConfirmDialogModule } from "primeng/confirmdialog";
   templateUrl: "./equipamento.component.html",
   styleUrl: "./equipamento.component.scss",
 })
-export class EquipamentoComponent {
+export class EquipamentoComponent{
   dados: any[] = [];
-
   displayDialog: boolean = false;
   selectedItem: any = {};
   isEditMode: boolean = false;
   dialogTitle: string = "";
+  equipamentoForm: FormGroup;
 
   constructor(
+    private fb: FormBuilder,
     private service: EquipamentoService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService
-  ) {}
+  ) {
+    this.equipamentoForm = this.fb.group({
+      id: [null],
+      number: ['', Validators.required],
+      ownership: ['', Validators.required],
+      qrCode: ['', Validators.required]
+    });
+  }
 
   ngOnInit() {
     this.service.list().subscribe(
@@ -59,6 +71,7 @@ export class EquipamentoComponent {
     this.selectedItem = {};
     this.isEditMode = true;
     this.displayDialog = true;
+    this.equipamentoForm.reset();
   }
 
   openEditDialog(item: any) {
@@ -66,6 +79,20 @@ export class EquipamentoComponent {
     this.selectedItem = { ...item };
     this.isEditMode = false;
     this.displayDialog = true;
+    this.equipamentoForm.patchValue(this.selectedItem);
+  }
+
+  onSubmit() {
+    if (this.equipamentoForm.valid) {
+      this.selectedItem = this.equipamentoForm.value;
+      this.saveItem();
+    } else {
+      this.messageService.add({
+        severity: "error",
+        summary: "Erro",
+        detail: "Por favor, preencha todos os campos obrigatórios.",
+      });
+    }
   }
 
   saveItem() {

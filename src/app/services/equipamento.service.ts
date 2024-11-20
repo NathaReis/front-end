@@ -12,7 +12,7 @@ export class EquipamentoService {
   constructor(private http: HttpClient) {}
 
   private getHeaders(): HttpHeaders {
-    const accessToken = localStorage.getItem('acessToken');
+    const accessToken = localStorage.getItem('accessToken');
     return new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${accessToken}`
@@ -32,6 +32,7 @@ export class EquipamentoService {
   }
 
   update(dto: any): Observable<any> {
+    console.log("🚀 ~ file: equipamento.service.ts:35 ~ EquipamentoService ~ update ~ dto:", dto);
     return this.http.put<any>(`${this.apiUrl}`, dto, { headers: this.getHeaders() });
   }
 

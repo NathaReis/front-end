@@ -47,22 +47,33 @@
   </p-card>
 
   <p-dialog header="{{ dialogTitle }}" [(visible)]="displayDialog" [modal]="true" [closable]="false" [style]="{width: '30rem'}">
-    <div class="formulario">
-        <label for="number" class="font-semibold w-6rem">Nome do Equipamento: </label>
-        <input pInputText id="number" class="flex-auto" [(ngModel)]="selectedItem.number" autocomplete="off" />
-    </div>
-    <div class="formulario">
-        <label for="ownership" class="font-semibold w-6rem">Origem: </label>
-        <input pInputText id="ownership" class="flex-auto" [(ngModel)]="selectedItem.ownership" autocomplete="off" />
-    </div>
-    <div class="formulario">
-        <label for="qrCode" class="font-semibold w-6rem">QR Code: </label>
-        <input pInputText id="qrCode" class="flex-auto" [(ngModel)]="selectedItem.qrCode" autocomplete="off" />
-    </div>
-    <div class="buttons">
-        <p-button label="Cancelar" severity="danger" (onClick)="displayDialog = false" />
-        <p-button class="button-salvar" label="Salvar" (onClick)="saveItem()" />
-    </div>
+    <form [formGroup]="equipamentoForm" (ngSubmit)="onSubmit()">
+      <div class="formulario">
+          <label for="number" class="font-semibold w-6rem">Nome do Equipamento: </label>
+          <input pInputText id="number" class="flex-auto" formControlName="number" autocomplete="off" />
+          <div *ngIf="equipamentoForm.controls['number'].invalid && (equipamentoForm.controls['number'].dirty || equipamentoForm.controls['number'].touched)">
+            <small class="p-error">Nome do Equipamento é obrigatório.</small>
+          </div>
+      </div>
+      <div class="formulario">
+          <label for="ownership" class="font-semibold w-6rem">Origem: </label>
+          <input pInputText id="ownership" class="flex-auto" formControlName="ownership" autocomplete="off" />
+          <div *ngIf="equipamentoForm.controls['ownership'].invalid && (equipamentoForm.controls['ownership'].dirty || equipamentoForm.controls['ownership'].touched)">
+            <small class="p-error">Origem é obrigatória.</small>
+          </div>
+      </div>
+      <div class="formulario">
+          <label for="qrCode" class="font-semibold w-6rem">QR Code: </label>
+          <input pInputText id="qrCode" class="flex-auto" formControlName="qrCode" autocomplete="off" />
+          <div *ngIf="equipamentoForm.controls['qrCode'].invalid && (equipamentoForm.controls['qrCode'].dirty || equipamentoForm.controls['qrCode'].touched)">
+            <small class="p-error">QR Code é obrigatório.</small>
+          </div>
+      </div>
+      <div class="buttons">
+          <p-button label="Cancelar" severity="danger" (onClick)="displayDialog = false" />
+          <p-button class="button-salvar" label="Salvar" type="submit" [disabled]="equipamentoForm.invalid" />
+      </div>
+    </form>
   </p-dialog>
 </div>
 

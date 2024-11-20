@@ -42,9 +42,9 @@ export class LoginComponent {
     if (loginForm.valid) {
       try {
         const response = await this.loginService.login(this.email, this.password).toPromise();
-        const { acessToken, refreshToken } = response;
+        const { accessToken, refreshToken } = response;
   
-        localStorage.setItem('acessToken', acessToken);
+        localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
   
         this.messageService.add({severity:'success', summary:'Sucesso', detail:'Login realizado com sucesso!'});

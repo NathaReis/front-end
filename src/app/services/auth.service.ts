@@ -27,8 +27,12 @@ export class AuthService {
   }
 
   refreshToken(): Observable<any> {
+    const refreshToken = localStorage.getItem('refreshToken');
     return this.http.post(`${this.apiUrl}/refresh-token`, {}, {
-      headers: this.getHeaders(),
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${refreshToken}`
+      })
     })
     .pipe(
       catchError(this.handleError)

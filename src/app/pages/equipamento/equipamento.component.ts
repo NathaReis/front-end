@@ -155,11 +155,6 @@ export class EquipamentoComponent{
       rejectIcon: "none",
       accept: () => {
         this.deleteItem(item); // Chama a função deleteItem para remover o item
-        this.messageService.add({
-          severity: "info",
-          summary: "Confirmado",
-          detail: "Equipamento deletado",
-        });
       },
       reject: () => {
         this.messageService.add({

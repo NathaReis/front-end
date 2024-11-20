@@ -62,7 +62,7 @@ export class EquipamentoComponent {
     this.service.list().subscribe(
       (response) => {
         this.dados = response;
-        this.dadosOriginais = [...response]; // Armazena uma cópia dos dados originais
+        this.dadosOriginais = [...response];
       },
       (error) => {
         console.error(error);
@@ -129,7 +129,7 @@ export class EquipamentoComponent {
       this.service.create(this.selectedItem).subscribe(
         (response) => {
           this.dados.push(response);
-          this.dadosOriginais.push(response); // Atualiza os dados originais
+          this.dadosOriginais.push(response);
           this.messageService.add({
             severity: "success",
             summary: "Sucesso",
@@ -161,7 +161,7 @@ export class EquipamentoComponent {
       acceptIcon: "none",
       rejectIcon: "none",
       accept: () => {
-        this.deleteItem(item); // Chama a função deleteItem para remover o item
+        this.deleteItem(item);
       },
       reject: () => {
         this.messageService.add({
@@ -177,7 +177,7 @@ export class EquipamentoComponent {
     this.service.delete(item.id).subscribe(
       () => {
         this.dados = this.dados.filter((d) => d.id !== item.id);
-        this.dadosOriginais = this.dadosOriginais.filter((d) => d.id !== item.id); // Atualiza os dados originais
+        this.dadosOriginais = this.dadosOriginais.filter((d) => d.id !== item.id);
         this.messageService.add({
           severity: "info",
           summary: "Confirmado",
@@ -203,5 +203,20 @@ export class EquipamentoComponent {
         return item[key].toString().toLowerCase().includes(this.filters[key]);
       });
     });
+  }
+
+  refreshData() {
+    this.service.list().subscribe(
+      (response) => {
+        this.dados = response;
+        this.dadosOriginais = [...response];
+        this.filters = {};
+        const filterInputs = document.querySelectorAll('.header-table input');
+        filterInputs.forEach(input => (input as HTMLInputElement).value = '');
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
   }
 }

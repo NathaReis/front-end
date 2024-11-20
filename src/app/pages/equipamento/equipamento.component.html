@@ -6,6 +6,14 @@
       <button
         pButton
         pRipple
+        icon="pi pi-refresh"
+        (click)="refreshData()"
+        label="Atualizar"
+      ></button>
+      <button
+        pButton
+        pRipple
+        icon="pi pi-plus"
         label="Adicionar Equipamento"
         class="p-button-success"
         (click)="openAddDialog()"

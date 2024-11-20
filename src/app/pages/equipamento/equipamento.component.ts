@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { CommonModule } from '@angular/common';
+import { CommonModule } from "@angular/common";
 import { TableModule } from "primeng/table";
 import { MenuComponent } from "../menu/menu.component";
 import { CardModule } from "primeng/card";
@@ -33,7 +33,7 @@ import { ConfirmDialogModule } from "primeng/confirmdialog";
   templateUrl: "./equipamento.component.html",
   styleUrl: "./equipamento.component.scss",
 })
-export class EquipamentoComponent{
+export class EquipamentoComponent {
   dados: any[] = [];
   displayDialog: boolean = false;
   selectedItem: any = {};
@@ -49,9 +49,9 @@ export class EquipamentoComponent{
   ) {
     this.equipamentoForm = this.fb.group({
       id: [null],
-      number: ['', Validators.required],
-      ownership: ['', Validators.required],
-      qrCode: ['', Validators.required]
+      number: ["", Validators.required],
+      ownership: ["", Validators.required],
+      qrCode: ["", Validators.required],
     });
   }
 
@@ -119,7 +119,9 @@ export class EquipamentoComponent{
     } else {
       this.service.update(this.selectedItem).subscribe(
         (response) => {
-          const index = this.dados.findIndex((d) => d.id === this.selectedItem.id);
+          const index = this.dados.findIndex(
+            (d) => d.id === this.selectedItem.id
+          );
           if (index !== -1) {
             this.dados[index] = response;
             this.messageService.add({

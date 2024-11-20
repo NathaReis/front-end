@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EquipamentoService {
   private apiUrl = 'https://devterrasa.com/java/v1/private/equipament/';
@@ -15,32 +19,47 @@ export class EquipamentoService {
     const accessToken = localStorage.getItem('accessToken');
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`
+      Authorization: `Bearer ${accessToken}`,
     });
   }
 
   getEquipament(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}${id}`, { headers: this.getHeaders() });
+    return this.http.get<any>(`${this.apiUrl}${id}`, {
+      headers: this.getHeaders(),
+    });
   }
 
   list(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}`, { headers: this.getHeaders() });
+    return this.http.get<any[]>(`${this.apiUrl}`, {
+      headers: this.getHeaders(),
+    });
   }
 
   create(dto: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}`, dto, { headers: this.getHeaders() });
+    return this.http.post<any>(`${this.apiUrl}`, dto, {
+      headers: this.getHeaders(),
+    });
   }
 
   update(dto: any): Observable<any> {
-    console.log("🚀 ~ file: equipamento.service.ts:35 ~ EquipamentoService ~ update ~ dto:", dto);
-    return this.http.put<any>(`${this.apiUrl}`, dto, { headers: this.getHeaders() });
+    console.log(
+      '🚀 ~ file: equipamento.service.ts:35 ~ EquipamentoService ~ update ~ dto:',
+      dto
+    );
+    return this.http.put<any>(`${this.apiUrl}`, dto, {
+      headers: this.getHeaders(),
+    });
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}${id}`, { headers: this.getHeaders() });
+    return this.http.delete<void>(`${this.apiUrl}${id}`, {
+      headers: this.getHeaders(),
+    });
   }
 
   getEquipamentByQrCode(qrCode: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}qr-code/${qrCode}`, { headers: this.getHeaders() });
+    return this.http.get<any>(`${this.apiUrl}qr-code/${qrCode}`, {
+      headers: this.getHeaders(),
+    });
   }
 }

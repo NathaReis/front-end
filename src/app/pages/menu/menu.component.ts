@@ -51,8 +51,14 @@ export class MenuComponent implements OnInit {
       {
         label: 'Logout',
         icon: 'pi pi-user', // Ícone de usuário
-        route: '/login',
+        command: () => this.logout(),
       },
     ];
+  }
+
+  logout() {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    this.router.navigate(['/login']);
   }
 }

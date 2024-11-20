@@ -213,9 +213,19 @@ export class EquipamentoComponent {
         this.filters = {};
         const filterInputs = document.querySelectorAll('.header-table input');
         filterInputs.forEach(input => (input as HTMLInputElement).value = '');
+        this.messageService.add({
+          severity: "success",
+          summary: "Sucesso",
+          detail: "Página atualizada com sucesso",
+        });
       },
       (error) => {
         console.error(error);
+        this.messageService.add({
+          severity: "error",
+          summary: "Erro",
+          detail: "Erro ao atualizar página",
+        });
       }
     );
   }

@@ -42,16 +42,16 @@ export class MenuComponent implements OnInit {
         icon: 'pi pi-chart-line', // Ícone de gráfico de linha
         route: '/relatorio',
       },
-      {
-        label: 'Status Ordem de Serviço',
-        icon: 'pi pi-info-circle',
-        route: '/status-ordem-servico',
-      },
-      {
-        label: 'Notificações',
-        icon: 'pi pi-bell', // Ícone de sino
-        route: '/notificacoes',
-      },
+      // {
+      //   label: 'Status Ordem de Serviço',
+      //   icon: 'pi pi-info-circle',
+      //   route: '/status-ordem-servico',
+      // },
+      // {
+      //   label: 'Notificações',
+      //   icon: 'pi pi-bell', // Ícone de sino
+      //   route: '/notificacoes',
+      // },
       {
         label: 'Logout',
         icon: 'pi pi-user', // Ícone de usuário

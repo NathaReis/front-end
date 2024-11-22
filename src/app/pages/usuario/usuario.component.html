@@ -92,6 +92,25 @@
   >
     <form [formGroup]="usuarioForm" (ngSubmit)="onSubmit()">
       <div class="formulario">
+        <label for="role" class="font-semibold w-6rem">Função: </label>
+        <p-dropdown
+          [options]="roles"
+          id="role"
+          class="flex-auto"
+          formControlName="role"
+          placeholder="Selecione uma função"
+        ></p-dropdown>
+        <div
+          *ngIf="
+            usuarioForm.controls['role'].invalid &&
+            (usuarioForm.controls['role'].dirty ||
+              usuarioForm.controls['role'].touched)
+          "
+        >
+          <small class="p-error">Função é obrigatória.</small>
+        </div>
+      </div>
+      <div class="formulario">
         <label for="name" class="font-semibold w-6rem">Nome: </label>
         <input
           pInputText
@@ -127,25 +146,6 @@
           "
         >
           <small class="p-error">Login é obrigatório.</small>
-        </div>
-      </div>
-      <div class="formulario">
-        <label for="role" class="font-semibold w-6rem">Função: </label>
-        <input
-          pInputText
-          id="role"
-          class="flex-auto"
-          formControlName="role"
-          autocomplete="off"
-        />
-        <div
-          *ngIf="
-            usuarioForm.controls['role'].invalid &&
-            (usuarioForm.controls['role'].dirty ||
-              usuarioForm.controls['role'].touched)
-          "
-        >
-          <small class="p-error">Função é obrigatória.</small>
         </div>
       </div>
       <div class="buttons">

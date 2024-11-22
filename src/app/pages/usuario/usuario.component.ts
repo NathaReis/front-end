@@ -12,6 +12,7 @@ import { UserService } from "../../services/user.service";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { ToastModule } from "primeng/toast";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
+import { DropdownModule } from 'primeng/dropdown';
 
 @Component({
   selector: 'app-usuario',
@@ -28,6 +29,7 @@ import { ConfirmDialogModule } from "primeng/confirmdialog";
     InputTextModule,
     ToastModule,
     ConfirmDialogModule,
+    DropdownModule,
   ],
   templateUrl: './usuario.component.html',
   styleUrls: ['./usuario.component.scss'],
@@ -43,6 +45,7 @@ export class UsuarioComponent {
   usuarioForm: FormGroup;
   globalFilterFields: string[] = ['id', 'name', 'login', 'role'];
   filters: { [key: string]: string } = {};
+  roles: any[];
 
   constructor(
     private fb: FormBuilder,
@@ -56,6 +59,12 @@ export class UsuarioComponent {
       login: ["", Validators.required],
       role: ["", Validators.required],
     });
+    this.roles = [
+      { label: 'ADMIN', value: 'ADMIN' },
+      { label: 'MANAGER', value: 'MANAGER' },
+      { label: 'MECHANICS', value: 'MECHANICS' },
+      { label: 'USER', value: 'USER' }
+    ];
   }
 
   ngOnInit() {

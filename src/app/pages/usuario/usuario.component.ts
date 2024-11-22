@@ -45,7 +45,7 @@ export class UsuarioComponent {
   usuarioForm: FormGroup;
   globalFilterFields: string[] = ['id', 'name', 'login', 'role'];
   filters: { [key: string]: string } = {};
-  roles: any[];
+  roles: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -59,12 +59,6 @@ export class UsuarioComponent {
       login: ["", Validators.required],
       role: ["", Validators.required],
     });
-    this.roles = [
-      { label: 'ADMIN', value: 'ADMIN' },
-      { label: 'MANAGER', value: 'MANAGER' },
-      { label: 'MECHANICS', value: 'MECHANICS' },
-      { label: 'USER', value: 'USER' }
-    ];
   }
 
   ngOnInit() {
@@ -72,6 +66,15 @@ export class UsuarioComponent {
       (response) => {
         this.dados = response;
         this.dadosOriginais = [...response];
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+
+    this.service.listRoles().subscribe(
+      (response) => {
+        this.roles = response;
       },
       (error) => {
         console.error(error);

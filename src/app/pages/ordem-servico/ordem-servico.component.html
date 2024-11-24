@@ -1,2 +1,223 @@
 <app-menu></app-menu>
-<p>ordem-servico works!</p>
+<div class="body">
+  <p class="header">Ordens de Serviço</p>
+  <p-card>
+    <div class="header-table">
+      <button
+        pButton
+        pRipple
+        icon="pi pi-refresh"
+        (click)="refreshData()"
+        label="Atualizar"
+      ></button>
+      <button
+        pButton
+        pRipple
+        icon="pi pi-plus"
+        label="Adicionar Ordem de Serviço"
+        class="p-button-success"
+        (click)="openAddDialog()"
+      ></button>
+    </div>
+    <p-table
+    [value]="dados"
+    [paginator]="true"
+    [rows]="5"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    [globalFilterFields]="[
+      'id',
+      'number',
+      'status',
+      'description',
+      'requester',
+      'issueDate'
+    ]"
+    autoLayout="true"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="id">ID <p-sortIcon field="id" /></th>
+        <th pSortableColumn="number">
+          Nome da Ordem de Serviço <p-sortIcon field="number" />
+        </th>
+        <th pSortableColumn="status">Status <p-sortIcon field="status" /></th>
+        <th pSortableColumn="description">
+          Descrição dos Serviços <p-sortIcon field="description" />
+        </th>
+        <th pSortableColumn="requester">
+          Solicitante <p-sortIcon field="requester" />
+        </th>
+        <th pSortableColumn="issueDate">
+          Data de Emissão <p-sortIcon field="issueDate" />
+        </th>
+        <th>Opções</th>
+      </tr>
+      <tr>
+        <th>
+          <input
+            pInputText
+            type="text"
+            (input)="applyFilter($event, 'id')"
+            placeholder="Filtrar por ID"
+          />
+        </th>
+        <th>
+          <input
+            pInputText
+            type="text"
+            (input)="applyFilter($event, 'number')"
+            placeholder="Filtrar por Nome"
+          />
+        </th>
+        <th>
+          <input
+            pInputText
+            type="text"
+            (input)="applyFilter($event, 'status')"
+            placeholder="Filtrar por Status"
+          />
+        </th>
+        <th>
+          <input
+            pInputText
+            type="text"
+            (input)="applyFilter($event, 'description')"
+            placeholder="Filtrar por Descrição"
+          />
+        </th>
+        <th>
+          <input
+            pInputText
+            type="text"
+            (input)="applyFilter($event, 'requester')"
+            placeholder="Filtrar por Solicitante"
+          />
+        </th>
+        <th>
+          <input
+            pInputText
+            type="text"
+            (input)="applyFilter($event, 'issueDate')"
+            placeholder="Filtrar por Data de Emissão"
+          />
+        </th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item>
+      <tr>
+        <td>{{ item.id }}</td>
+        <td>{{ item.number }}</td>
+        <td>{{ item.status }}</td>
+        <td>{{ item.description }}</td>
+        <td>{{ item.requester }}</td>
+        <td>{{ item.issueDate }}</td>
+        <td>
+          <button
+            pButton
+            icon="pi pi-pencil"
+            class="p-button-rounded p-button-info p-button-sm"
+            title="Editar Ordem de Serviço"
+            (click)="openEditDialog(item)"
+          ></button>
+          <button
+            pButton
+            icon="pi pi-trash"
+            class="p-button-rounded p-button-danger p-button-sm"
+            title="Deletar Ordem de Serviço"
+            (click)="confirm2($event, item)"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+  </p-card>
+
+  <p-dialog
+    header="{{ dialogTitle }}"
+    [(visible)]="displayDialog"
+    [modal]="true"
+    [closable]="false"
+    [style]="{ width: '30rem' }"
+  >
+    <form [formGroup]="ordemServicoForm" (ngSubmit)="onSubmit()">
+      <div class="formulario">
+        <label for="number" class="font-semibold w-6rem"
+          >Nome da Ordem de Serviço:
+        </label>
+        <input
+          pInputText
+          id="number"
+          class="flex-auto"
+          formControlName="number"
+          autocomplete="off"
+        />
+        <div
+          *ngIf="
+            ordemServicoForm.controls['number'].invalid &&
+            (ordemServicoForm.controls['number'].dirty ||
+              ordemServicoForm.controls['number'].touched)
+          "
+        >
+          <small class="p-error">Nome da Ordem de Serviço é obrigatório.</small>
+        </div>
+      </div>
+      <div class="formulario">
+        <label for="ownership" class="font-semibold w-6rem">Origem: </label>
+        <input
+          pInputText
+          id="ownership"
+          class="flex-auto"
+          formControlName="ownership"
+          autocomplete="off"
+        />
+        <div
+          *ngIf="
+            ordemServicoForm.controls['ownership'].invalid &&
+            (ordemServicoForm.controls['ownership'].dirty ||
+              ordemServicoForm.controls['ownership'].touched)
+          "
+        >
+          <small class="p-error">Origem é obrigatória.</small>
+        </div>
+      </div>
+      <div class="formulario">
+        <label for="qrCode" class="font-semibold w-6rem">QR Code: </label>
+        <input
+          pInputText
+          id="qrCode"
+          class="flex-auto"
+          formControlName="qrCode"
+          autocomplete="off"
+        />
+        <div
+          *ngIf="
+            ordemServicoForm.controls['qrCode'].invalid &&
+            (ordemServicoForm.controls['qrCode'].dirty ||
+              ordemServicoForm.controls['qrCode'].touched)
+          "
+        >
+          <small class="p-error">QR Code é obrigatório.</small>
+        </div>
+      </div>
+      <div class="buttons">
+        <p-button
+          label="Cancelar"
+          severity="danger"
+          (click)="displayDialog = false"
+        ></p-button>
+        <p-button
+          class="button-salvar"
+          label="Salvar"
+          type="submit"
+          [disabled]="ordemServicoForm.invalid"
+        ></p-button>
+      </div>
+    </form>
+  </p-dialog>
+</div>
+
+<div class="card flex justify-content-center gap-2">
+  <p-toast></p-toast>
+  <p-confirmDialog></p-confirmDialog>
+</div>

@@ -9,19 +9,19 @@ import { catchError, switchMap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
   private apiUrl = 'https://devterrasa.com/java/v1/private/user/';
 
-  constructor(private http: HttpClient, private authService: AuthService) { }
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   private getHeaders(): HttpHeaders {
     const accessToken = localStorage.getItem('accessToken');
     console.log(accessToken);
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`
+      Authorization: `Bearer ${accessToken}`,
     });
   }
 
@@ -49,35 +49,24 @@ export class UserService {
 
   list(search?: string): Observable<any> {
     const url = search ? `${this.apiUrl}?search=${search}` : this.apiUrl;
-    return this.http.get(url, { headers: this.getHeaders() })
-      .pipe(
-        catchError(error => {
-          if (error.status === 401) {
-            return this.handle401Error(() => this.list(search));
-          } else {
-            return this.handleError(error);
-          }
-        })
-      );
-  }
-
-  listRoles(): Observable<any> {
-    return this.http.get(`${this.apiUrl}roles`, { headers: this.getHeaders() })
-      .pipe(
-        catchError(error => {
-          if (error.status === 401) {
-            return this.handle401Error(() => this.listRoles());
-          } else {
-            return this.handleError(error);
-          }
-        })
-      );
+    return this.http.get(url, { headers: this.getHeaders() }).pipe(
+      catchError((error) => {
+        if (error.status === 401) {
+          return this.handle401Error(() => this.list(search));
+        } else {
+          return this.handleError(error);
+        }
+      })
+    );
   }
 
   register(registerDto: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}register`, registerDto, { headers: this.getHeaders() })
+    return this.http
+      .post(`${this.apiUrl}register`, registerDto, {
+        headers: this.getHeaders(),
+      })
       .pipe(
-        catchError(error => {
+        catchError((error) => {
           if (error.status === 401) {
             return this.handle401Error(() => this.register(registerDto));
           } else {
@@ -88,9 +77,10 @@ export class UserService {
   }
 
   update(userDto: any): Observable<any> {
-    return this.http.put(this.apiUrl, userDto, { headers: this.getHeaders() })
+    return this.http
+      .put(this.apiUrl, userDto, { headers: this.getHeaders() })
       .pipe(
-        catchError(error => {
+        catchError((error) => {
           if (error.status === 401) {
             return this.handle401Error(() => this.update(userDto));
           } else {
@@ -100,23 +90,11 @@ export class UserService {
       );
   }
 
-  updateRole(userDto: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}role`, userDto, { headers: this.getHeaders() })
-      .pipe(
-        catchError(error => {
-          if (error.status === 401) {
-            return this.handle401Error(() => this.updateRole(userDto));
-          } else {
-            return this.handleError(error);
-          }
-        })
-      );
-  }
-
   delete(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}${id}`, { headers: this.getHeaders() })
+    return this.http
+      .delete(`${this.apiUrl}${id}`, { headers: this.getHeaders() })
       .pipe(
-        catchError(error => {
+        catchError((error) => {
           if (error.status === 401) {
             return this.handle401Error(() => this.delete(id));
           } else {
@@ -126,10 +104,39 @@ export class UserService {
       );
   }
 
-  listMechanics(): Observable<any> {
-    return this.http.get(`${this.apiUrl}mechanics`, { headers: this.getHeaders() })
+  listRoles(): Observable<any> {
+    return this.http
+      .get(`${this.apiUrl}roles`, { headers: this.getHeaders() })
       .pipe(
-        catchError(error => {
+        catchError((error) => {
+          if (error.status === 401) {
+            return this.handle401Error(() => this.listRoles());
+          } else {
+            return this.handleError(error);
+          }
+        })
+      );
+  }
+
+  updateRole(userDto: any): Observable<any> {
+    return this.http
+      .put(`${this.apiUrl}role`, userDto, { headers: this.getHeaders() })
+      .pipe(
+        catchError((error) => {
+          if (error.status === 401) {
+            return this.handle401Error(() => this.updateRole(userDto));
+          } else {
+            return this.handleError(error);
+          }
+        })
+      );
+  }
+
+  listMechanics(): Observable<any> {
+    return this.http
+      .get(`${this.apiUrl}mechanics`, { headers: this.getHeaders() })
+      .pipe(
+        catchError((error) => {
           if (error.status === 401) {
             return this.handle401Error(() => this.listMechanics());
           } else {

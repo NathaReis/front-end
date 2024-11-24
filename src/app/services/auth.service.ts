@@ -23,6 +23,17 @@ export class AuthService {
     });
   }
 
+  handleError(error: HttpErrorResponse) {
+    let errorMessage = 'Ocorreu um erro desconhecido.';
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = `Erro: ${error.error.message}`;
+    } else {
+      errorMessage = `Erro ${error.status}: ${error.message}`;
+    }
+    console.error('An error occurred:', errorMessage);
+    return throwError(errorMessage);
+  }
+
   login(email: string, password: string): Observable<any> {
     return this.http
       .post(`${this.apiUrl}/login`, { login: email, password: password })
@@ -47,24 +58,7 @@ export class AuthService {
 
   logout(): Observable<any> {
     return this.http
-      .post(
-        `${this.apiUrl}/logout`,
-        {},
-        {
-          headers: this.getHeaders(),
-        }
-      )
+      .post(`${this.apiUrl}/logout`, {}, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
-  }
-
-  private handleError(error: HttpErrorResponse) {
-    let errorMessage = 'Ocorreu um erro desconhecido.';
-    if (error.error instanceof ErrorEvent) {
-      errorMessage = `Erro: ${error.error.message}`;
-    } else {
-      errorMessage = `Erro ${error.status}: ${error.message}`;
-    }
-    console.error('An error occurred:', errorMessage);
-    return throwError(errorMessage);
   }
 }

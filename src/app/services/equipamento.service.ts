@@ -47,86 +47,100 @@ export class EquipamentoService {
   }
 
   getEquipament(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}${id}`, {
-      headers: this.getHeaders(),
-    }).pipe(
-      catchError(error => {
-        if (error.status === 401) {
-          return this.handle401Error(() => this.getEquipament(id));
-        } else {
-          return this.handleError(error);
-        }
+    return this.http
+      .get<any>(`${this.apiUrl}${id}`, {
+        headers: this.getHeaders(),
       })
-    );
+      .pipe(
+        catchError((error) => {
+          if (error.status === 401) {
+            return this.handle401Error(() => this.getEquipament(id));
+          } else {
+            return this.handleError(error);
+          }
+        })
+      );
   }
 
   list(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}`, {
-      headers: this.getHeaders(),
-    }).pipe(
-      catchError(error => {
-        if (error.status === 401) {
-          return this.handle401Error(() => this.list());
-        } else {
-          return this.handleError(error);
-        }
+    return this.http
+      .get<any[]>(`${this.apiUrl}`, {
+        headers: this.getHeaders(),
       })
-    );
+      .pipe(
+        catchError((error) => {
+          if (error.status === 401) {
+            return this.handle401Error(() => this.list());
+          } else {
+            return this.handleError(error);
+          }
+        })
+      );
   }
 
   create(dto: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}`, dto, {
-      headers: this.getHeaders(),
-    }).pipe(
-      catchError(error => {
-        if (error.status === 401) {
-          return this.handle401Error(() => this.create(dto));
-        } else {
-          return this.handleError(error);
-        }
+    return this.http
+      .post<any>(`${this.apiUrl}`, dto, {
+        headers: this.getHeaders(),
       })
-    );
+      .pipe(
+        catchError((error) => {
+          if (error.status === 401) {
+            return this.handle401Error(() => this.create(dto));
+          } else {
+            return this.handleError(error);
+          }
+        })
+      );
   }
 
   update(dto: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}`, dto, {
-      headers: this.getHeaders(),
-    }).pipe(
-      catchError(error => {
-        if (error.status === 401) {
-          return this.handle401Error(() => this.update(dto));
-        } else {
-          return this.handleError(error);
-        }
+    return this.http
+      .put<any>(`${this.apiUrl}`, dto, {
+        headers: this.getHeaders(),
       })
-    );
+      .pipe(
+        catchError((error) => {
+          if (error.status === 401) {
+            return this.handle401Error(() => this.update(dto));
+          } else {
+            return this.handleError(error);
+          }
+        })
+      );
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}${id}`, {
-      headers: this.getHeaders(),
-    }).pipe(
-      catchError(error => {
-        if (error.status === 401) {
-          return this.handle401Error(() => this.delete(id));
-        } else {
-          return this.handleError(error);
-        }
+    return this.http
+      .delete<void>(`${this.apiUrl}${id}`, {
+        headers: this.getHeaders(),
       })
-    );
+      .pipe(
+        catchError((error) => {
+          if (error.status === 401) {
+            return this.handle401Error(() => this.delete(id));
+          } else {
+            return this.handleError(error);
+          }
+        })
+      );
   }
 
   getEquipamentByQrCode(qrCode: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}qr-code/${qrCode}`, {
-      headers: this.getHeaders(),
-    }).pipe(
-      catchError(error => {
-        if (error.status === 401) {
-          return this.handle401Error(() => this.getEquipamentByQrCode(qrCode));
-        } else {
-          return this.handleError(error);
-        }
+    return this.http
+      .get<any>(`${this.apiUrl}qr-code/${qrCode}`, {
+        headers: this.getHeaders(),
       })
-    );
+      .pipe(
+        catchError((error) => {
+          if (error.status === 401) {
+            return this.handle401Error(() =>
+              this.getEquipamentByQrCode(qrCode)
+            );
+          } else {
+            return this.handleError(error);
+          }
+        })
+      );
   }
 }

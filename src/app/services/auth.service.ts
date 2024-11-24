@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private apiUrl = 'https://devterrasa.com/java/v1/public/auth';
@@ -20,32 +24,37 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, { login: email, password: password })
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http
+      .post(`${this.apiUrl}/login`, { login: email, password: password })
+      .pipe(catchError(this.handleError));
   }
 
   refreshToken(): Observable<any> {
     const refreshToken = localStorage.getItem('refreshToken');
-    return this.http.post(`${this.apiUrl}/refresh-token`, {}, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${refreshToken}`
-      })
-    })
-    .pipe(
-      catchError(this.handleError)
-    );
+    return this.http
+      .post(
+        `${this.apiUrl}/refresh-token`,
+        {},
+        {
+          headers: new HttpHeaders({
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${refreshToken}`,
+          }),
+        }
+      )
+      .pipe(catchError(this.handleError));
   }
 
   logout(): Observable<any> {
-    return this.http.post(`${this.apiUrl}/logout`, {}, {
-      headers: this.getHeaders(),
-    })
-    .pipe(
-      catchError(this.handleError)
-    );
+    return this.http
+      .post(
+        `${this.apiUrl}/logout`,
+        {},
+        {
+          headers: this.getHeaders(),
+        }
+      )
+      .pipe(catchError(this.handleError));
   }
 
   private handleError(error: HttpErrorResponse) {

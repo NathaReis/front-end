@@ -13,6 +13,10 @@ import { ConfirmationService, MessageService } from "primeng/api";
 import { ToastModule } from "primeng/toast";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { Router } from "@angular/router";
+import { EquipamentoService } from '../../services/equipamento.service';
+import { DropdownModule } from 'primeng/dropdown';
+import { UserService } from "../../services/user.service";
+import { CalendarModule } from 'primeng/calendar';
 
 @Component({
   selector: 'app-ordem-servico',
@@ -29,6 +33,8 @@ import { Router } from "@angular/router";
     InputTextModule,
     ToastModule,
     ConfirmDialogModule,
+    DropdownModule,
+    CalendarModule,
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './ordem-servico.component.html',
@@ -37,26 +43,59 @@ import { Router } from "@angular/router";
 export class OrdemServicoComponent implements OnInit {
   dados: any[] = [];
   ordemServicoForm: FormGroup;
+  workOrderForm: FormGroup;
+  closingForm: FormGroup;
   displayDialog: boolean = false;
   dialogTitle: string = '';
   hasPermission: any;
+  equipamento: any;
+  equipamentoSelecionado: any;
+  user: any;
+  userSelecionado: any;
 
   constructor(
     private fb: FormBuilder,
     private ordemServicoService: OrdemServicoService,
-    private confirmationService: ConfirmationService,
+    private equipamentService: EquipamentoService,
     private messageService: MessageService,
     private router: Router,
+    private userService: UserService
   ) {
     this.ordemServicoForm = this.fb.group({
       id: [null],
-      number: ['', Validators.required],
-      ownership: ['', Validators.required],
-      qrCode: ['', Validators.required],
-      status: [''],
-      description: [''],
-      requester: [''],
-      issueDate: ['']
+      equipament: ['', Validators.required],
+      orderStatus: ['', Validators.required],
+      requestedServicesDescription: ['', Validators.required],
+      requesterName: ['', Validators.required],
+      issueDate: ['', Validators.required],
+      equipamentId: [null],
+      hourMeter: ['', Validators.required],
+    });
+
+    this.workOrderForm = this.fb.group({
+      equipamentNumber: [{ value: '', disabled: true }, Validators.required],
+      orderStatus: ['', Validators.required],
+      maintenanceLocation: [''],
+      hourMeter: [''],
+      requestedServicesDescription: ['', Validators.required],
+      completedServicesDescription: [''],
+      pendingServicesDescription: [''],
+      responsibleMechanics: ['', Validators.required],
+      requester: [{ value: '', disabled: true }, Validators.required],
+      issueDate: [{ value: '', disabled: true }, Validators.required]
+    });
+
+    this.closingForm = this.fb.group({
+      quantity15w40: [0.00, Validators.min(0)],
+      quantityAw68: [0.00, Validators.min(0)],
+      quantity428: [0.00, Validators.min(0)],
+      quantity80W: [0.00, Validators.min(0)],
+      quantity85w90: [0.00, Validators.min(0)],
+      closingLaborValue: [0.00, Validators.min(0)],
+      closingTransportation: [0.00, Validators.min(0)],
+      closingThirdParties: [0.00, Validators.min(0)],
+      closingOils: [0.00, Validators.min(0)],
+      closingTotal: [{ value: 0.00, disabled: true }, Validators.min(0)]
     });
   }
 
@@ -76,15 +115,50 @@ export class OrdemServicoComponent implements OnInit {
     }
     
     this.refreshData();
+    this.getEquipament();
+    this.getUser();
+  }
+  
+  onEquipamentChange(event: any) {
+    this.equipamentoSelecionado = this.equipamento.find((e: { id: any; }) => e.id === event.value);
+    console.log("🚀 ~ file: ordem-servico.component.ts:118 ~ OrdemServicoComponent ~ onEquipamentChange ~ this.equipamentoSelecionado:", this.equipamentoSelecionado);
+  }
+
+  onRequesterChange(event: any) {
+    this.userSelecionado = event.value;
+    console.log("🚀 ~ file: ordem-servico.component.ts:127 ~ OrdemServicoComponent ~ onRequesterChange ~ this.userSelecionado:", this.userSelecionado);
   }
 
   refreshData() {
     this.ordemServicoService.list().subscribe(
       (data) => {
         this.dados = data;
+        console.log("🚀 ~ file: ordem-servico.component.ts:85 ~ OrdemServicoComponent ~ refreshData ~ this.dados:", this.dados);
       },
       (error) => {
         this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao carregar dados' });
+      }
+    );
+  }
+
+  getEquipament() {
+    this.equipamentService.list().subscribe(
+      (response) => {
+        this.equipamento = response;
+        console.log("🚀 ~ file: ordem-servico.component.ts:129 ~ OrdemServicoComponent ~ getEquipament ~ this.equipamento:", this.equipamento);
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  getUser() {
+    this.userService.list().subscribe(
+      (response) => {
+        this.user = response;      },
+      (error) => {
+        console.error(error);
       }
     );
   }
@@ -102,14 +176,34 @@ export class OrdemServicoComponent implements OnInit {
 
   openEditDialog(item: any) {
     this.dialogTitle = 'Editar Ordem de Serviço';
-    this.ordemServicoForm.patchValue(item);
+    this.ordemServicoForm.patchValue({
+      id: item.id,
+      equipamentNumber: item.equipament.number,
+      orderStatus: item.orderStatus,
+      requestedServicesDescription: item.requestedServicesDescription,
+      requesterName: item.requester.name,
+      issueDate: item.issueDate
+    });
     this.displayDialog = true;
   }
 
   onSubmit() {
     if (this.ordemServicoForm.valid) {
-      if (this.ordemServicoForm.value.id) {
-        this.ordemServicoService.update(this.ordemServicoForm.value).subscribe(
+      const formValue = this.ordemServicoForm.value;
+      console.log("🚀 ~ file: ordem-servico.component.ts:148 ~ OrdemServicoComponent ~ onSubmit ~ formValue:", formValue);
+      const ordemServico = {
+        id: formValue.id,
+        equipament: this.equipamentoSelecionado,
+        orderStatus: formValue.orderStatus,
+        requestedServicesDescription: formValue.requestedServicesDescription,
+        requester: { name: formValue.requesterName },
+        hourMeter: formValue.hourMeter,
+        equipamentId: this.equipamentoSelecionado.id,
+        //requester: this.user,
+      };
+
+      if (ordemServico.id) {
+        this.ordemServicoService.update(ordemServico).subscribe(
           () => {
             this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Ordem de Serviço atualizada' });
             this.refreshData();
@@ -120,7 +214,7 @@ export class OrdemServicoComponent implements OnInit {
           }
         );
       } else {
-        this.ordemServicoService.create(this.ordemServicoForm.value).subscribe(
+        this.ordemServicoService.create(ordemServico).subscribe(
           () => {
             this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Ordem de Serviço adicionada' });
             this.refreshData();
@@ -146,21 +240,3 @@ export class OrdemServicoComponent implements OnInit {
     // });
   }
 }
-
-// class WorkOrder {
-//   id: number;
-//   equipament: Equipament; // Referência ao objeto Equipament
-//   orderStatus: string;
-//   maintenanceLocation: string;
-//   hourMeter: number;
-//   closing: Closure; // Referência ao objeto Closure
-//   outputData: OutputData[]; // Lista de objetos OutputData
-//   inputData: InputData[]; // Lista de objetos InputData
-//   issueDate: Date;
-//   lastModificationDate: Date;
-//   requestedServicesDescription: string;
-//   completedServicesDescription: string;
-//   pendingServicesDescription: string;
-//   responsibleMechanics: User[]; // Lista de objetos User
-//   requester: User; // Referência ao objeto User
-// }

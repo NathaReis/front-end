@@ -21,26 +21,32 @@ export class MenuComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    const userPermissions = JSON.parse(localStorage.getItem('permissions') || '[]');
+
     this.items = [
       {
         label: 'Ordem de Serviço',
         icon: 'pi pi-briefcase', // Ícone de pasta de trabalho
         route: '/ordem-servico',
+        permission: 'workorder:read',
       },
       {
         label: 'Equipamentos',
         icon: 'pi pi-cog', // Ícone de engrenagem
         route: '/equipamento',
+        permission: 'equipment:read',
       },
       {
         label: 'Usuários',
         icon: 'pi pi-users', // Ícone de usuários
         route: '/usuario',
+        permission: 'user:read',
       },
       {
         label: 'Relatórios',
         icon: 'pi pi-chart-line', // Ícone de gráfico de linha
         route: '/relatorio',
+        permission: 'report:read',
       },
       // {
       //   label: 'Status Ordem de Serviço',
@@ -57,7 +63,7 @@ export class MenuComponent implements OnInit {
         icon: 'pi pi-user', // Ícone de usuário
         command: () => this.logout(),
       },
-    ];
+    ].filter(item => !item.permission || userPermissions.includes(item.permission));
   }
 
   logout() {

@@ -12,6 +12,7 @@ import { OrdemServicoService } from "../../services/ordem-servico.service";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { ToastModule } from "primeng/toast";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-ordem-servico',
@@ -38,12 +39,14 @@ export class OrdemServicoComponent implements OnInit {
   ordemServicoForm: FormGroup;
   displayDialog: boolean = false;
   dialogTitle: string = '';
+  hasPermission: any;
 
   constructor(
     private fb: FormBuilder,
     private ordemServicoService: OrdemServicoService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private router: Router,
   ) {
     this.ordemServicoForm = this.fb.group({
       id: [null],
@@ -58,6 +61,20 @@ export class OrdemServicoComponent implements OnInit {
   }
 
   ngOnInit() {
+    const userPermissions = JSON.parse(
+      localStorage.getItem('permissions') || '[]'
+    );
+    this.hasPermission = userPermissions.includes('workorder:read');
+
+    if (!this.hasPermission) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'Você não tem permissão para acessar esta página.',
+      });
+      this.router.navigate(['/inicio']);
+    }
+    
     this.refreshData();
   }
 

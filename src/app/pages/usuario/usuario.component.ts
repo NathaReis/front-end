@@ -13,6 +13,7 @@ import { ConfirmationService, MessageService } from "primeng/api";
 import { ToastModule } from "primeng/toast";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { DropdownModule } from 'primeng/dropdown';
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-usuario',
@@ -46,12 +47,14 @@ export class UsuarioComponent {
   globalFilterFields: string[] = ['id', 'name', 'login', 'role'];
   filters: { [key: string]: string } = {};
   roles: any[] = [];
+  hasPermission: any;
 
   constructor(
     private fb: FormBuilder,
     private service: UserService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private router: Router,
   ) {
     this.usuarioForm = this.fb.group({
       id: [null],
@@ -62,6 +65,20 @@ export class UsuarioComponent {
   }
 
   ngOnInit() {
+    const userPermissions = JSON.parse(
+      localStorage.getItem('permissions') || '[]'
+    );
+    this.hasPermission = userPermissions.includes('user:read');
+
+    if (!this.hasPermission) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'Você não tem permissão para acessar esta página.',
+      });
+      this.router.navigate(['/inicio']);
+    }
+    
     this.service.list().subscribe(
       (response) => {
         this.dados = response;

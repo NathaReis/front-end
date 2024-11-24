@@ -46,6 +46,11 @@ export class LoginComponent {
         const response = await this.AuthService.login(this.email, this.password).toPromise();
         const { accessToken, refreshToken } = response;
   
+        localStorage.setItem('userName', response.userName);
+        localStorage.setItem('userLogin', response.userLogin);
+        localStorage.setItem('userRole', response.userRole);
+        localStorage.setItem('permissions', JSON.stringify(response.permissions));
+        console.log('Permissions stored:', JSON.parse(localStorage.getItem('permissions') || '[]'));
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
   

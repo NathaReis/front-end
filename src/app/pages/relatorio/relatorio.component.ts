@@ -1,20 +1,21 @@
-import { Component } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { CommonModule } from "@angular/common";
-import { TableModule } from "primeng/table";
-import { MenuComponent } from "../menu/menu.component";
-import { CardModule } from "primeng/card";
-import { ButtonModule } from "primeng/button";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { DialogModule } from "primeng/dialog";
-import { InputTextModule } from "primeng/inputtext";
-import { RegistroService } from "../../services/registro.service";
-import { ConfirmationService, MessageService } from "primeng/api";
-import { ToastModule } from "primeng/toast";
-import { ConfirmDialogModule } from "primeng/confirmdialog";
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { TableModule } from 'primeng/table';
+import { MenuComponent } from '../menu/menu.component';
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { RegistroService } from '../../services/registro.service';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { CheckboxModule } from 'primeng/checkbox';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-relatorio',
@@ -41,11 +42,13 @@ import { CheckboxModule } from 'primeng/checkbox';
 })
 export class RelatorioComponent {
   relatorioForm: FormGroup;
+  hasPermission: boolean = false;
 
   constructor(
     private fb: FormBuilder,
     private registroService: RegistroService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private router: Router
   ) {
     this.relatorioForm = this.fb.group({
       startDate: [null, Validators.required],
@@ -54,6 +57,22 @@ export class RelatorioComponent {
       custos: [true],
       status: [true],
     });
+  }
+
+  ngOnInit() {
+    const userPermissions = JSON.parse(
+      localStorage.getItem('permissions') || '[]'
+    );
+    this.hasPermission = userPermissions.includes('report:read');
+
+    if (!this.hasPermission) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'Você não tem permissão para acessar esta página.',
+      });
+      this.router.navigate(['/inicio']);
+    }
   }
 
   onSubmit() {

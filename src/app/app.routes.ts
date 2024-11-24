@@ -10,20 +10,19 @@ import { OrdemServicoComponent } from './pages/ordem-servico/ordem-servico.compo
 import { StatusOrdemServicoComponent } from './pages/status-ordem-servico/status-ordem-servico.component';
 import { UsuarioComponent } from './pages/usuario/usuario.component';
 import { AuthGuard } from './guards/auth.guard';
+import { PermissionGuard } from './guards/permission.guard';
 
 export const routes: Routes = [
-  //juliana@user.com
-  //123456Aa!
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'cadastro', component: CadastroComponent },
-  { path: 'equipamento', component: EquipamentoComponent, canActivate: [AuthGuard] },
+  { path: 'equipamento', component: EquipamentoComponent, canActivate: [AuthGuard, PermissionGuard], data: { permissions: ['equipment:read'] } },
   { path: 'inicio', component: InicioComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'menu', component: MenuComponent, canActivate: [AuthGuard] },
-  { path: 'ordem-servico', component: OrdemServicoComponent, canActivate: [AuthGuard] },
+  { path: 'ordem-servico', component: OrdemServicoComponent, canActivate: [AuthGuard, PermissionGuard], data: { permissions: ['workorder:read'] } },
   { path: 'recuperar-login', component: RecuperarLoginComponent },
-  { path: 'relatorio', component: RelatorioComponent, canActivate: [AuthGuard] },
+  { path: 'relatorio', component: RelatorioComponent, canActivate: [AuthGuard, PermissionGuard], data: { permissions: ['report:read'] } },
   { path: 'status-ordem-servico', component: StatusOrdemServicoComponent, canActivate: [AuthGuard] },
-  { path: 'usuario', component: UsuarioComponent, canActivate: [AuthGuard] },
+  { path: 'usuario', component: UsuarioComponent, canActivate: [AuthGuard, PermissionGuard], data: { permissions: ['user:read'] } },
   { path: '**', redirectTo: '/login' }
 ];

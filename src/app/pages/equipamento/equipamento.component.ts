@@ -1,20 +1,21 @@
-import { Component } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { CommonModule } from "@angular/common";
-import { TableModule } from "primeng/table";
-import { MenuComponent } from "../menu/menu.component";
-import { CardModule } from "primeng/card";
-import { ButtonModule } from "primeng/button";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { DialogModule } from "primeng/dialog";
-import { InputTextModule } from "primeng/inputtext";
-import { EquipamentoService } from "../../services/equipamento.service";
-import { ConfirmationService, MessageService } from "primeng/api";
-import { ToastModule } from "primeng/toast";
-import { ConfirmDialogModule } from "primeng/confirmdialog";
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { TableModule } from 'primeng/table';
+import { MenuComponent } from '../menu/menu.component';
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { EquipamentoService } from '../../services/equipamento.service';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: "app-equipamento",
+  selector: 'app-equipamento',
   standalone: true,
   imports: [
     TableModule,
@@ -30,8 +31,8 @@ import { ConfirmDialogModule } from "primeng/confirmdialog";
     ConfirmDialogModule,
   ],
   providers: [ConfirmationService, MessageService],
-  templateUrl: "./equipamento.component.html",
-  styleUrl: "./equipamento.component.scss",
+  templateUrl: './equipamento.component.html',
+  styleUrl: './equipamento.component.scss',
 })
 export class EquipamentoComponent {
   dados: any[] = [];
@@ -39,26 +40,43 @@ export class EquipamentoComponent {
   displayDialog: boolean = false;
   selectedItem: any = {};
   isEditMode: boolean = false;
-  dialogTitle: string = "";
+  dialogTitle: string = '';
   equipamentoForm: FormGroup;
   globalFilterFields: string[] = ['id', 'number', 'ownership', 'qrCode'];
   filters: { [key: string]: string } = {};
+
+  hasPermission: any;
 
   constructor(
     private fb: FormBuilder,
     private service: EquipamentoService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private router: Router
   ) {
     this.equipamentoForm = this.fb.group({
       id: [null],
-      number: ["", Validators.required],
-      ownership: ["", Validators.required],
-      qrCode: ["", Validators.required],
+      number: ['', Validators.required],
+      ownership: ['', Validators.required],
+      qrCode: ['', Validators.required],
     });
   }
 
   ngOnInit() {
+    const userPermissions = JSON.parse(
+      localStorage.getItem('permissions') || '[]'
+    );
+    this.hasPermission = userPermissions.includes('equipment:read');
+
+    if (!this.hasPermission) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'Você não tem permissão para acessar esta página.',
+      });
+      this.router.navigate(['/inicio']);
+    }
+
     this.service.list().subscribe(
       (response) => {
         this.dados = response;
@@ -71,7 +89,7 @@ export class EquipamentoComponent {
   }
 
   openAddDialog() {
-    this.dialogTitle = "Adicionar Equipamento";
+    this.dialogTitle = 'Adicionar Equipamento';
     this.selectedItem = {};
     this.isEditMode = false;
     this.displayDialog = true;
@@ -79,7 +97,7 @@ export class EquipamentoComponent {
   }
 
   openEditDialog(item: any) {
-    this.dialogTitle = "Editar Equipamento";
+    this.dialogTitle = 'Editar Equipamento';
     this.selectedItem = { ...item };
     this.isEditMode = true;
     this.displayDialog = true;
@@ -92,9 +110,9 @@ export class EquipamentoComponent {
       this.saveItem();
     } else {
       this.messageService.add({
-        severity: "error",
-        summary: "Erro",
-        detail: "Por favor, preencha todos os campos obrigatórios.",
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'Por favor, preencha todos os campos obrigatórios.',
       });
     }
   }
@@ -109,9 +127,9 @@ export class EquipamentoComponent {
           if (index !== -1) {
             this.dados[index] = response;
             this.messageService.add({
-              severity: "success",
-              summary: "Sucesso",
-              detail: "Equipamento atualizado com sucesso",
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: 'Equipamento atualizado com sucesso',
             });
           }
           this.displayDialog = false;
@@ -119,9 +137,9 @@ export class EquipamentoComponent {
         (error) => {
           console.error(error);
           this.messageService.add({
-            severity: "error",
-            summary: "Erro",
-            detail: "Erro ao atualizar equipamento",
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Erro ao atualizar equipamento',
           });
         }
       );
@@ -131,18 +149,18 @@ export class EquipamentoComponent {
           this.dados.push(response);
           this.dadosOriginais.push(response);
           this.messageService.add({
-            severity: "success",
-            summary: "Sucesso",
-            detail: "Equipamento adicionado com sucesso",
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Equipamento adicionado com sucesso',
           });
           this.displayDialog = false;
         },
         (error) => {
           console.error(error);
           this.messageService.add({
-            severity: "error",
-            summary: "Erro",
-            detail: "Erro ao adicionar equipamento",
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Erro ao adicionar equipamento',
           });
         }
       );
@@ -153,21 +171,21 @@ export class EquipamentoComponent {
     this.selectedItem = item;
     this.confirmationService.confirm({
       target: event.target as EventTarget,
-      message: "Você deseja deletar esse equipamento?",
-      header: "Confirmar exclusão",
-      icon: "pi pi-info-circle",
-      acceptButtonStyleClass: "p-button-danger p-button-text",
-      rejectButtonStyleClass: "p-button-text p-button-text",
-      acceptIcon: "none",
-      rejectIcon: "none",
+      message: 'Você deseja deletar esse equipamento?',
+      header: 'Confirmar exclusão',
+      icon: 'pi pi-info-circle',
+      acceptButtonStyleClass: 'p-button-danger p-button-text',
+      rejectButtonStyleClass: 'p-button-text p-button-text',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
       accept: () => {
         this.deleteItem(item);
       },
       reject: () => {
         this.messageService.add({
-          severity: "error",
-          summary: "Recusado",
-          detail: "Equipamento não deletado",
+          severity: 'error',
+          summary: 'Recusado',
+          detail: 'Equipamento não deletado',
         });
       },
     });
@@ -177,19 +195,21 @@ export class EquipamentoComponent {
     this.service.delete(item.id).subscribe(
       () => {
         this.dados = this.dados.filter((d) => d.id !== item.id);
-        this.dadosOriginais = this.dadosOriginais.filter((d) => d.id !== item.id);
+        this.dadosOriginais = this.dadosOriginais.filter(
+          (d) => d.id !== item.id
+        );
         this.messageService.add({
-          severity: "info",
-          summary: "Confirmado",
-          detail: "Equipamento deletado",
+          severity: 'info',
+          summary: 'Confirmado',
+          detail: 'Equipamento deletado',
         });
       },
       (error) => {
         console.error(error);
         this.messageService.add({
-          severity: "error",
-          summary: "Erro",
-          detail: "Erro ao deletar equipamento",
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Erro ao deletar equipamento',
         });
       }
     );
@@ -198,8 +218,8 @@ export class EquipamentoComponent {
   applyFilter(event: Event, field: string) {
     const input = event.target as HTMLInputElement;
     this.filters[field] = input.value.toLowerCase();
-    this.dados = this.dadosOriginais.filter(item => {
-      return Object.keys(this.filters).every(key => {
+    this.dados = this.dadosOriginais.filter((item) => {
+      return Object.keys(this.filters).every((key) => {
         return item[key].toString().toLowerCase().includes(this.filters[key]);
       });
     });
@@ -212,19 +232,21 @@ export class EquipamentoComponent {
         this.dadosOriginais = [...response];
         this.filters = {};
         const filterInputs = document.querySelectorAll('.header-table input');
-        filterInputs.forEach(input => (input as HTMLInputElement).value = '');
+        filterInputs.forEach(
+          (input) => ((input as HTMLInputElement).value = '')
+        );
         this.messageService.add({
-          severity: "success",
-          summary: "Sucesso",
-          detail: "Página atualizada com sucesso",
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: 'Página atualizada com sucesso',
         });
       },
       (error) => {
         console.error(error);
         this.messageService.add({
-          severity: "error",
-          summary: "Erro",
-          detail: "Erro ao atualizar página",
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Erro ao atualizar página',
         });
       }
     );

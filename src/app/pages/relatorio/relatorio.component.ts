@@ -22,18 +22,18 @@ import { WebSocketService } from '../../services/web-socket.service';
   selector: 'app-relatorio',
   standalone: true,
   imports: [
-    TableModule,
+    //TableModule,
     CardModule,
-    CommonModule,
+    //CommonModule,
     MenuComponent,
-    ButtonModule,
-    DialogModule,
-    FormsModule,
+    //ButtonModule,
+    //DialogModule,
+    //FormsModule,
     ReactiveFormsModule,
-    InputTextModule,
+    //InputTextModule,
     ToastModule,
     ConfirmDialogModule,
-    DropdownModule,
+    //DropdownModule,
     CalendarModule,
     CheckboxModule,
   ],
@@ -80,7 +80,6 @@ export class RelatorioComponent {
   onSubmit() {
     if (this.relatorioForm.valid) {
       const formData = this.relatorioForm.value;
-      console.log('Form Data:', formData);
       this.messageService.add({
         severity: 'success',
         summary: 'Sucesso',

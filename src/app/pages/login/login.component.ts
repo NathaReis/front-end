@@ -50,7 +50,6 @@ export class LoginComponent {
         localStorage.setItem('userLogin', response.userLogin);
         localStorage.setItem('userRole', response.userRole);
         localStorage.setItem('permissions', JSON.stringify(response.permissions));
-        console.log('Permissions stored:', JSON.parse(localStorage.getItem('permissions') || '[]'));
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
   

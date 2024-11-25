@@ -28,11 +28,11 @@ import { WebSocketService } from '../../services/web-socket.service';
     CardModule,
     CommonModule,
     MenuComponent,
-    ButtonModule,
+    //ButtonModule,
     DialogModule,
-    FormsModule,
+    //FormsModule,
     ReactiveFormsModule,
-    InputTextModule,
+    //InputTextModule,
     ToastModule,
     ConfirmDialogModule,
     DropdownModule,
@@ -124,19 +124,16 @@ export class OrdemServicoComponent implements OnInit {
   
   onEquipamentChange(event: any) {
     this.equipamentoSelecionado = this.equipamento.find((e: { id: any; }) => e.id === event.value);
-    console.log("🚀 ~ file: ordem-servico.component.ts:118 ~ OrdemServicoComponent ~ onEquipamentChange ~ this.equipamentoSelecionado:", this.equipamentoSelecionado);
   }
 
   onRequesterChange(event: any) {
     this.userSelecionado = event.value;
-    console.log("🚀 ~ file: ordem-servico.component.ts:127 ~ OrdemServicoComponent ~ onRequesterChange ~ this.userSelecionado:", this.userSelecionado);
   }
 
   refreshData() {
     this.ordemServicoService.list().subscribe(
       (data) => {
         this.dados = data;
-        console.log("🚀 ~ file: ordem-servico.component.ts:85 ~ OrdemServicoComponent ~ refreshData ~ this.dados:", this.dados);
       },
       (error) => {
         this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao carregar dados' });
@@ -148,7 +145,6 @@ export class OrdemServicoComponent implements OnInit {
     this.equipamentService.list().subscribe(
       (response) => {
         this.equipamento = response;
-        console.log("🚀 ~ file: ordem-servico.component.ts:129 ~ OrdemServicoComponent ~ getEquipament ~ this.equipamento:", this.equipamento);
       },
       (error) => {
         console.error(error);
@@ -193,7 +189,6 @@ export class OrdemServicoComponent implements OnInit {
   onSubmit() {
     if (this.ordemServicoForm.valid) {
       const formValue = this.ordemServicoForm.value;
-      console.log("🚀 ~ file: ordem-servico.component.ts:148 ~ OrdemServicoComponent ~ onSubmit ~ formValue:", formValue);
       const ordemServico = {
         id: formValue.id,
         equipament: this.equipamentoSelecionado,

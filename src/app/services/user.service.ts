@@ -18,7 +18,6 @@ export class UserService {
 
   private getHeaders(): HttpHeaders {
     const accessToken = localStorage.getItem('accessToken');
-    console.log(accessToken);
     return new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `Bearer ${accessToken}`,

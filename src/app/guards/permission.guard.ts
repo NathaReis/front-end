@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import {
+  CanActivate,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+  Router,
+} from '@angular/router';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -13,9 +18,11 @@ export class PermissionGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
     const requiredPermissions = route.data['permissions'] as string[];
-    const userPermissions = JSON.parse(localStorage.getItem('permissions') || '[]');
+    const userPermissions = JSON.parse(
+      localStorage.getItem('permissions') || '[]'
+    );
 
-    const hasPermission = requiredPermissions.every(permission =>
+    const hasPermission = requiredPermissions.every((permission) =>
       userPermissions.includes(permission)
     );
 

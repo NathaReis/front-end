@@ -17,10 +17,10 @@ import { AuthService } from '../../services/auth.service';
   imports: [
     CommonModule,
     FormsModule,
-    RouterModule,
+    //RouterModule,
     CardModule,
     ButtonModule,
-    InputTextModule,
+    //InputTextModule,
     PasswordModule,
     ToastModule,
   ],

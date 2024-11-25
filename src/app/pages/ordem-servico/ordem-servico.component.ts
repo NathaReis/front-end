@@ -18,7 +18,9 @@ import { DropdownModule } from 'primeng/dropdown';
 import { UserService } from "../../services/user.service";
 import { CalendarModule } from 'primeng/calendar';
 import { WebSocketService } from '../../services/web-socket.service';
-
+import { WorkOrderDto, WorkOrderCreateDto } from './ordem-servico.model';
+import { EquipamentDto } from '../equipamento/equipamento.model';
+import { UserDto } from '../usuario/usuario.model';
 
 @Component({
   selector: 'app-ordem-servico',
@@ -43,17 +45,17 @@ import { WebSocketService } from '../../services/web-socket.service';
   styleUrl: './ordem-servico.component.scss'
 })
 export class OrdemServicoComponent implements OnInit {
-  dados: any[] = [];
+  dados: WorkOrderDto[] = [];
   ordemServicoForm: FormGroup;
   workOrderForm: FormGroup;
   closingForm: FormGroup;
   displayDialog: boolean = false;
   dialogTitle: string = '';
-  hasPermission: any;
-  equipamento: any;
-  equipamentoSelecionado: any;
-  user: any;
-  userSelecionado: any;
+  hasPermission: boolean;
+  equipamento: EquipamentDto[] = [];
+  equipamentoSelecionado: EquipamentDto | null = null;
+  user: UserDto[] = [];
+  userSelecionado: UserDto | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -100,9 +102,7 @@ export class OrdemServicoComponent implements OnInit {
       closingOils: [0.00, Validators.min(0)],
       closingTotal: [{ value: 0.00, disabled: true }, Validators.min(0)]
     });
-  }
 
-  ngOnInit() {
     const userPermissions = JSON.parse(
       localStorage.getItem('permissions') || '[]'
     );
@@ -116,6 +116,10 @@ export class OrdemServicoComponent implements OnInit {
       });
       this.router.navigate(['/inicio']);
     }
+  }
+
+  ngOnInit() {
+
     
     this.refreshData();
     this.getEquipament();
@@ -135,7 +139,7 @@ export class OrdemServicoComponent implements OnInit {
   }
   
   onEquipamentChange(event: any) {
-    this.equipamentoSelecionado = this.equipamento.find((e: { id: any; }) => e.id === event.value);
+    this.equipamentoSelecionado = this.equipamento.find((e) => e.id === event.value) || null;
   }
 
   onRequesterChange(event: any) {
@@ -167,7 +171,8 @@ export class OrdemServicoComponent implements OnInit {
   getUser() {
     this.userService.list().subscribe(
       (response) => {
-        this.user = response;      },
+        this.user = response;
+      },
       (error) => {
         console.error(error);
       }
@@ -176,7 +181,7 @@ export class OrdemServicoComponent implements OnInit {
 
   applyFilter(event: Event, field: string) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dados = this.dados.filter(item => item[field].toString().toLowerCase().includes(filterValue.toLowerCase()));
+    this.dados = this.dados.filter((item: any) => item[field].toString().toLowerCase().includes(filterValue.toLowerCase()));
   }
 
   openAddDialog() {
@@ -185,7 +190,7 @@ export class OrdemServicoComponent implements OnInit {
     this.displayDialog = true;
   }
 
-  openEditDialog(item: any) {
+  openEditDialog(item: WorkOrderDto) {
     this.dialogTitle = 'Editar Ordem de Serviço';
     this.ordemServicoForm.patchValue({
       id: item.id,
@@ -199,54 +204,51 @@ export class OrdemServicoComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.ordemServicoForm.valid) {
-      const formValue = this.ordemServicoForm.value;
-      const ordemServico = {
-        id: formValue.id,
-        equipament: this.equipamentoSelecionado,
-        orderStatus: formValue.orderStatus,
-        requestedServicesDescription: formValue.requestedServicesDescription,
-        requester: { name: formValue.requesterName },
-        hourMeter: formValue.hourMeter,
-        equipamentId: this.equipamentoSelecionado.id,
-        //requester: this.user,
-      };
+    // if (this.ordemServicoForm.valid) {
+    //   const formValue = this.ordemServicoForm.value;
+    //   const ordemServico: WorkOrderCreateDto = {
+    //     equipamentId: this.equipamentoSelecionado?.id.toString(),
+    //     hourMeter: formValue.hourMeter,
+    //     requestedServicesDescription: formValue.requestedServicesDescription,
+    //   };
 
-      if (ordemServico.id) {
-        this.ordemServicoService.update(ordemServico).subscribe(
-          () => {
-            this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Ordem de Serviço atualizada' });
-            this.refreshData();
-            this.displayDialog = false;
-          },
-          (error) => {
-            this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao atualizar Ordem de Serviço' });
-          }
-        );
-      } else {
-        this.ordemServicoService.create(ordemServico).subscribe(
-          () => {
-            this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Ordem de Serviço adicionada' });
-            this.refreshData();
-            this.displayDialog = false;
-          },
-          (error) => {
-            this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao adicionar Ordem de Serviço' });
-          }
-        );
-      }
-    }
-  }
+    //   if (formValue.id) {
+    //     const workOrderDto: WorkOrderDto = {
+    //       ...ordemServico,
+    //       id: formValue.id,
+    //       equipament: this.equipamentoSelecionado!,
+    //       orderStatus: formValue.orderStatus,
+    //       maintenanceLocation: '',
+    //       issueDate: formValue.issueDate,
+    //       lastModificationDate: '',
+    //       completedServicesDescription: '',
+    //       pendingServicesDescription: '',
+    //       responsibleMechanics: [] as UserDto[],
+    //       requester: this.userSelecionado!,
+    //     };
 
-  confirm2(event: Event, item: any) {
-    // this.confirmationService.confirm({
-    //   target: event.target,
-    //   message: 'Tem certeza que deseja deletar esta Ordem de Serviço?',
-    //   icon: 'pi pi-exclamation-triangle',
-    //   accept: () => {
-    //     // Aqui você pode adicionar a lógica para deletar a ordem de serviço quando o método estiver disponível no serviço
-    //     this.messageService.add({ severity: 'info', summary: 'Info', detail: 'Função de deletar não implementada' });
+    //     this.ordemServicoService.update(workOrderDto).subscribe(
+    //       () => {
+    //         this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Ordem de Serviço atualizada' });
+    //         this.refreshData();
+    //         this.displayDialog = false;
+    //       },
+    //       (error) => {
+    //         this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao atualizar Ordem de Serviço' });
+    //       }
+    //     );
+    //   } else {
+    //     this.ordemServicoService.create(ordemServico).subscribe(
+    //       () => {
+    //         this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Ordem de Serviço adicionada' });
+    //         this.refreshData();
+    //         this.displayDialog = false;
+    //       },
+    //       (error) => {
+    //         this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao adicionar Ordem de Serviço' });
+    //       }
+    //     );
     //   }
-    // });
+    // }
   }
 }

@@ -6,6 +6,8 @@ import {
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { AuthenticationDto } from './../pages/login/login.model';
+
 
 @Injectable({
   providedIn: 'root',
@@ -34,9 +36,9 @@ export class AuthService {
     return throwError(errorMessage);
   }
 
-  login(email: string, password: string): Observable<any> {
+  login(authenticationDto: AuthenticationDto): Observable<any> {
     return this.http
-      .post(`${this.apiUrl}/login`, { login: email, password: password })
+      .post(`${this.apiUrl}/login`, authenticationDto)
       .pipe(catchError(this.handleError));
   }
 

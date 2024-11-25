@@ -7,6 +7,7 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
+import { WorkOrderDto, ClosureDto, InputDataDto, OutputDto, WorkOrderCreateDto } from './../pages/ordem-servico/ordem-servico.model'
 
 @Injectable({
   providedIn: 'root',
@@ -46,8 +47,8 @@ export class OrdemServicoService {
     );
   }
 
-  getWorkOrder(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}${id}`, {
+  getWorkOrder(id: number): Observable<WorkOrderDto> {
+    return this.http.get<WorkOrderDto>(`${this.apiUrl}${id}`, {
       headers: this.getHeaders(),
     }).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -60,8 +61,8 @@ export class OrdemServicoService {
     );
   }
 
-  list(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}`, {
+  list(): Observable<WorkOrderDto[]> {
+    return this.http.get<WorkOrderDto[]>(`${this.apiUrl}`, {
       headers: this.getHeaders(),
     }).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -74,8 +75,8 @@ export class OrdemServicoService {
     );
   }
 
-  create(dto: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}`, dto, {
+  create(dto: WorkOrderCreateDto): Observable<WorkOrderCreateDto> {
+    return this.http.post<WorkOrderCreateDto>(`${this.apiUrl}`, dto, {
       headers: this.getHeaders(),
     }).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -88,8 +89,8 @@ export class OrdemServicoService {
     );
   }
 
-  update(dto: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}`, dto, {
+  update(dto: WorkOrderDto): Observable<WorkOrderDto> {
+    return this.http.put<WorkOrderDto>(`${this.apiUrl}`, dto, {
       headers: this.getHeaders(),
     }).pipe(
       catchError((error: HttpErrorResponse) => {

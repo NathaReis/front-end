@@ -10,6 +10,7 @@ import { PasswordModule } from 'primeng/password';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { AuthService } from '../../services/auth.service';
+import { AuthenticationDto } from './login.model'
 
 @Component({
   selector: 'app-login',
@@ -40,10 +41,15 @@ export class LoginComponent {
 
   async onSubmit(loginForm: NgForm) {
     if (loginForm.valid) {
-      try { //remover configurações de login
+      try { 
+        //remover configurações de login
         this.email = 'frederico@user.com';
         this.password = '123456Aa!';
-        const response = await this.AuthService.login(this.email, this.password).toPromise();
+        const authenticationDto: AuthenticationDto = {
+          login: this.email,
+          password: this.password
+        };
+        const response = await this.AuthService.login(authenticationDto).toPromise();
         const { accessToken, refreshToken } = response;
   
         localStorage.setItem('userName', response.userName);

@@ -47,7 +47,7 @@ export class EquipamentoComponent {
   globalFilterFields: string[] = ['id', 'number', 'ownership', 'qrCode'];
   filters: { [key: string]: string } = {};
 
-  hasPermission: any;
+  hasPermission: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -63,13 +63,12 @@ export class EquipamentoComponent {
       ownership: ['', Validators.required],
       qrCode: ['', Validators.required],
     });
-  }
 
-  ngOnInit() {
     const userPermissions = JSON.parse(
       localStorage.getItem('permissions') || '[]'
     );
     this.hasPermission = userPermissions.includes('equipment:read');
+    console.log("🚀 ~ file: equipamento.component.ts:73 ~ EquipamentoComponent ~ ngOnInit ~ this.hasPermission:",typeof this.hasPermission);
 
     if (!this.hasPermission) {
       this.messageService.add({
@@ -79,7 +78,9 @@ export class EquipamentoComponent {
       });
       this.router.navigate(['/inicio']);
     }
+  }
 
+  ngOnInit() {
     this.getEquipamento();
     this.WebSocket();
   }

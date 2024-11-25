@@ -8,7 +8,6 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthenticationDto } from './../pages/login/login.model';
 
-
 @Injectable({
   providedIn: 'root',
 })
@@ -25,7 +24,7 @@ export class AuthService {
     });
   }
 
-  handleError(error: HttpErrorResponse) {
+  private handleError = (error: HttpErrorResponse) => {
     let errorMessage = 'Ocorreu um erro desconhecido.';
     if (error.error instanceof ErrorEvent) {
       errorMessage = `Erro: ${error.error.message}`;
@@ -34,7 +33,7 @@ export class AuthService {
     }
     console.error('An error occurred:', errorMessage);
     return throwError(errorMessage);
-  }
+  };
 
   login(authenticationDto: AuthenticationDto): Observable<any> {
     return this.http

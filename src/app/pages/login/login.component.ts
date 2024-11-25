@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
-import { RouterModule } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -10,7 +9,7 @@ import { PasswordModule } from 'primeng/password';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { AuthService } from '../../services/auth.service';
-import { AuthenticationDto } from './login.model'
+import { AuthenticationDto } from './login.model';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +17,6 @@ import { AuthenticationDto } from './login.model'
   imports: [
     CommonModule,
     FormsModule,
-    //RouterModule,
     CardModule,
     ButtonModule,
     InputTextModule,
@@ -27,7 +25,7 @@ import { AuthenticationDto } from './login.model'
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  providers: [MessageService]
+  providers: [MessageService],
 })
 export class LoginComponent {
   email: string = '';
@@ -36,37 +34,55 @@ export class LoginComponent {
   constructor(
     private router: Router,
     private messageService: MessageService,
-    private AuthService: AuthService
+    private authService: AuthService
   ) {}
 
-  async onSubmit(loginForm: NgForm) {
+  onSubmit(loginForm: NgForm) {
     if (loginForm.valid) {
-      try { 
-        //remover configurações de login
-        this.email = 'frederico@user.com';
-        this.password = '123456Aa!';
-        const authenticationDto: AuthenticationDto = {
-          login: this.email,
-          password: this.password
-        };
-        const response = await this.AuthService.login(authenticationDto).toPromise();
-        const { accessToken, refreshToken } = response;
-  
-        localStorage.setItem('userName', response.userName);
-        localStorage.setItem('userLogin', response.userLogin);
-        localStorage.setItem('userRole', response.userRole);
-        localStorage.setItem('permissions', JSON.stringify(response.permissions));
-        localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('refreshToken', refreshToken);
-  
-        this.messageService.add({severity:'success', summary:'Sucesso', detail:'Login realizado com sucesso!'});
-        this.router.navigate(['/inicio']);
-      } catch (error) {
-        this.messageService.add({severity:'error', summary:'Erro', detail:'Login falhou. Verifique suas credenciais.'});
-        console.error(error);
-      }
+      this.email = 'frederico@user.com';
+      this.password = '123456Aa!';
+
+      const authenticationDto: AuthenticationDto = {
+        login: this.email,
+        password: this.password,
+      };
+
+      this.authService.login(authenticationDto).subscribe({
+        next: (response) => {
+          const { accessToken, refreshToken } = response;
+
+          localStorage.setItem('userName', response.userName);
+          localStorage.setItem('userLogin', response.userLogin);
+          localStorage.setItem('userRole', response.userRole);
+          localStorage.setItem(
+            'permissions',
+            JSON.stringify(response.permissions)
+          );
+          localStorage.setItem('accessToken', accessToken);
+          localStorage.setItem('refreshToken', refreshToken);
+
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Login realizado com sucesso!',
+          });
+          this.router.navigate(['/inicio']);
+        },
+        error: (error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Login falhou. Verifique suas credenciais.',
+          });
+          console.error(error);
+        },
+      });
     } else {
-      this.messageService.add({severity:'error', summary:'Erro', detail:'Por favor, preencha o formulário corretamente.'});
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'Por favor, preencha o formulário corretamente.',
+      });
     }
   }
 }

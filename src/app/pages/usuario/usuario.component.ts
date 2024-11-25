@@ -15,7 +15,12 @@ import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { DropdownModule } from 'primeng/dropdown';
 import { Router } from "@angular/router";
 import { WebSocketService } from '../../services/web-socket.service';
-
+import { PasswordModule } from 'primeng/password';
+import {
+  RegisterDto,
+  UserDto,
+  UserRoleUpdateDto,
+} from './usuario.model';
 
 @Component({
   selector: 'app-usuario',
@@ -29,27 +34,28 @@ import { WebSocketService } from '../../services/web-socket.service';
     DialogModule,
     //FormsModule,
     ReactiveFormsModule,
-    //InputTextModule,
+    InputTextModule,
     ToastModule,
     ConfirmDialogModule,
     DropdownModule,
+    PasswordModule
   ],
   templateUrl: './usuario.component.html',
   styleUrls: ['./usuario.component.scss'],
   providers: [ConfirmationService, MessageService],
 })
 export class UsuarioComponent {
-  dados: any[] = [];
-  dadosOriginais: any[] = [];
+  dados: UserDto[] = [];
+  dadosOriginais: UserDto[] = [];
   displayDialog: boolean = false;
-  selectedItem: any = {};
+  selectedItem: UserDto = {} as UserDto;
   isEditMode: boolean = false;
   dialogTitle: string = "";
   usuarioForm: FormGroup;
   globalFilterFields: string[] = ['id', 'name', 'login', 'role'];
   filters: { [key: string]: string } = {};
-  roles: any[] = [];
-  hasPermission: any;
+  roles: string[] = [];
+  hasPermission: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -64,6 +70,7 @@ export class UsuarioComponent {
       name: ["", Validators.required],
       login: ["", Validators.required],
       role: ["", Validators.required],
+      password: ["", Validators.required],
     });
   }
 
@@ -100,17 +107,29 @@ export class UsuarioComponent {
         console.error(error);
       }
     );
+    this.WebSocket();
+  }
+
+  WebSocket() {
+    this.webSocketService.connect();
+    this.webSocketService.getNotifications().subscribe((notification) => {
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Nova Notificação',
+        detail: notification,
+      });
+    });
   }
 
   openAddDialog() {
     this.dialogTitle = "Adicionar Usuário";
-    this.selectedItem = {};
+    this.selectedItem = {} as UserDto;
     this.isEditMode = false;
     this.displayDialog = true;
     this.usuarioForm.reset();
   }
 
-  openEditDialog(item: any) {
+  openEditDialog(item: UserDto) {
     this.dialogTitle = "Editar Usuário";
     this.selectedItem = { ...item };
     this.isEditMode = true;
@@ -158,7 +177,13 @@ export class UsuarioComponent {
         }
       );
     } else {
-      this.service.register(this.selectedItem).subscribe(
+      const registerDto: RegisterDto = {
+        name: this.selectedItem.name,
+        login: this.selectedItem.login,
+        password: this.selectedItem.password!,
+        role: this.selectedItem.role,
+      };
+      this.service.register(registerDto).subscribe(
         (response) => {
           this.dados.push(response);
           this.dadosOriginais.push(response);
@@ -181,7 +206,7 @@ export class UsuarioComponent {
     }
   }
 
-  confirm2(event: Event, item: any) {
+  confirm2(event: Event, item: UserDto) {
     this.selectedItem = item;
     this.confirmationService.confirm({
       target: event.target as EventTarget,
@@ -205,7 +230,7 @@ export class UsuarioComponent {
     });
   }
 
-  deleteItem(item: any) {
+  deleteItem(item: UserDto) {
     this.service.delete(item.id).subscribe(
       () => {
         this.dados = this.dados.filter((d) => d.id !== item.id);
@@ -230,7 +255,7 @@ export class UsuarioComponent {
   applyFilter(event: Event, field: string) {
     const input = event.target as HTMLInputElement;
     this.filters[field] = input.value.toLowerCase();
-    this.dados = this.dadosOriginais.filter(item => {
+    this.dados = this.dadosOriginais.filter((item: any) => {
       return Object.keys(this.filters).every(key => {
         return item[key].toString().toLowerCase().includes(this.filters[key]);
       });

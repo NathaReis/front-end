@@ -75,6 +75,18 @@ export class RelatorioComponent {
       });
       this.router.navigate(['/inicio']);
     }
+    this.WebSocket();
+  }
+
+  WebSocket() {
+    this.webSocketService.connect();
+    this.webSocketService.getNotifications().subscribe((notification) => {
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Nova Notificação',
+        detail: notification,
+      });
+    });
   }
 
   onSubmit() {

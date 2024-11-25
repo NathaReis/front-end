@@ -32,7 +32,7 @@ import { WebSocketService } from '../../services/web-socket.service';
     DialogModule,
     //FormsModule,
     ReactiveFormsModule,
-    //InputTextModule,
+    InputTextModule,
     ToastModule,
     ConfirmDialogModule,
     DropdownModule,
@@ -120,6 +120,18 @@ export class OrdemServicoComponent implements OnInit {
     this.refreshData();
     this.getEquipament();
     this.getUser();
+    this.WebSocket();
+  }
+
+  WebSocket() {
+    this.webSocketService.connect();
+    this.webSocketService.getNotifications().subscribe((notification) => {
+      this.messageService.add({
+        severity: 'info',
+        summary: 'Nova Notificação',
+        detail: notification,
+      });
+    });
   }
   
   onEquipamentChange(event: any) {

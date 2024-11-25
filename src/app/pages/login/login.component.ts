@@ -20,7 +20,7 @@ import { AuthService } from '../../services/auth.service';
     //RouterModule,
     CardModule,
     ButtonModule,
-    //InputTextModule,
+    InputTextModule,
     PasswordModule,
     ToastModule,
   ],

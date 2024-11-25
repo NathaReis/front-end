@@ -27,7 +27,7 @@ import { WebSocketService } from '../../services/web-socket.service';
     DialogModule,
     //FormsModule,
     ReactiveFormsModule,
-    //InputTextModule,
+    InputTextModule,
     ToastModule,
     ConfirmDialogModule,
   ],

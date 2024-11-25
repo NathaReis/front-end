@@ -7,6 +7,7 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
+import { EquipamentDto } from './../pages/equipamento/equipamento.model';
 
 @Injectable({
   providedIn: 'root',
@@ -46,9 +47,9 @@ export class EquipamentoService {
     );
   }
 
-  getEquipament(id: number): Observable<any> {
+  getEquipament(id: number): Observable<EquipamentDto> {
     return this.http
-      .get<any>(`${this.apiUrl}${id}`, {
+      .get<EquipamentDto>(`${this.apiUrl}${id}`, {
         headers: this.getHeaders(),
       })
       .pipe(
@@ -62,9 +63,9 @@ export class EquipamentoService {
       );
   }
 
-  list(): Observable<any[]> {
+  list(): Observable<EquipamentDto[]> {
     return this.http
-      .get<any[]>(`${this.apiUrl}`, {
+      .get<EquipamentDto[]>(`${this.apiUrl}`, {
         headers: this.getHeaders(),
       })
       .pipe(
@@ -78,9 +79,9 @@ export class EquipamentoService {
       );
   }
 
-  create(dto: any): Observable<any> {
+  create(dto: EquipamentDto): Observable<EquipamentDto> {
     return this.http
-      .post<any>(`${this.apiUrl}`, dto, {
+      .post<EquipamentDto>(`${this.apiUrl}`, dto, {
         headers: this.getHeaders(),
       })
       .pipe(
@@ -94,9 +95,9 @@ export class EquipamentoService {
       );
   }
 
-  update(dto: any): Observable<any> {
+  update(dto: EquipamentDto): Observable<EquipamentDto> {
     return this.http
-      .put<any>(`${this.apiUrl}`, dto, {
+      .put<EquipamentDto>(`${this.apiUrl}`, dto, {
         headers: this.getHeaders(),
       })
       .pipe(
@@ -126,9 +127,9 @@ export class EquipamentoService {
       );
   }
 
-  getEquipamentByQrCode(qrCode: string): Observable<any> {
+  getEquipamentByQrCode(qrCode: string): Observable<EquipamentDto> {
     return this.http
-      .get<any>(`${this.apiUrl}qr-code/${qrCode}`, {
+      .get<EquipamentDto>(`${this.apiUrl}qr-code/${qrCode}`, {
         headers: this.getHeaders(),
       })
       .pipe(

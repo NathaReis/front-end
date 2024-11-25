@@ -14,6 +14,7 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { Router } from '@angular/router';
 import { WebSocketService } from '../../services/web-socket.service';
+import { EquipamentDto } from './equipamento.model';
 
 @Component({
   selector: 'app-equipamento',
@@ -36,10 +37,10 @@ import { WebSocketService } from '../../services/web-socket.service';
   styleUrl: './equipamento.component.scss',
 })
 export class EquipamentoComponent {
-  dados: any[] = [];
-  dadosOriginais: any[] = [];
+  dados: EquipamentDto[] = [];
+  dadosOriginais: EquipamentDto[] = [];
   displayDialog: boolean = false;
-  selectedItem: any = {};
+  selectedItem: EquipamentDto = {} as EquipamentDto;
   isEditMode: boolean = false;
   dialogTitle: string = '';
   equipamentoForm: FormGroup;
@@ -79,8 +80,8 @@ export class EquipamentoComponent {
       this.router.navigate(['/inicio']);
     }
 
-   this.getEquipamento();
-   this.WebSocket();
+    this.getEquipamento();
+    this.WebSocket();
   }
 
   getEquipamento() {
@@ -108,13 +109,13 @@ export class EquipamentoComponent {
 
   openAddDialog() {
     this.dialogTitle = 'Adicionar Equipamento';
-    this.selectedItem = {};
+    this.selectedItem = {} as EquipamentDto;
     this.isEditMode = false;
     this.displayDialog = true;
     this.equipamentoForm.reset();
   }
 
-  openEditDialog(item: any) {
+  openEditDialog(item: EquipamentDto) {
     this.dialogTitle = 'Editar Equipamento';
     this.selectedItem = { ...item };
     this.isEditMode = true;
@@ -185,7 +186,7 @@ export class EquipamentoComponent {
     }
   }
 
-  confirm2(event: Event, item: any) {
+  confirm2(event: Event, item: EquipamentDto) {
     this.selectedItem = item;
     this.confirmationService.confirm({
       target: event.target as EventTarget,
@@ -209,34 +210,42 @@ export class EquipamentoComponent {
     });
   }
 
-  deleteItem(item: any) {
-    this.service.delete(item.id).subscribe(
-      () => {
-        this.dados = this.dados.filter((d) => d.id !== item.id);
-        this.dadosOriginais = this.dadosOriginais.filter(
-          (d) => d.id !== item.id
-        );
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Confirmado',
-          detail: 'Equipamento deletado',
-        });
-      },
-      (error) => {
-        console.error(error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Erro',
-          detail: 'Erro ao deletar equipamento',
-        });
-      }
-    );
+  deleteItem(item: EquipamentDto) {
+    if (typeof item.id === 'number' && item.id !== null && item.id !== undefined) {
+      this.service.delete(item.id).subscribe(
+        () => {
+          this.dados = this.dados.filter((d) => d.id !== item.id);
+          this.dadosOriginais = this.dadosOriginais.filter(
+            (d) => d.id !== item.id
+          );
+          this.messageService.add({
+            severity: 'info',
+            summary: 'Confirmado',
+            detail: 'Equipamento deletado',
+          });
+        },
+        (error) => {
+          console.error(error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Erro ao deletar equipamento',
+          });
+        }
+      );
+    } else {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'ID do equipamento é inválido',
+      });
+    }
   }
 
   applyFilter(event: Event, field: string) {
     const input = event.target as HTMLInputElement;
     this.filters[field] = input.value.toLowerCase();
-    this.dados = this.dadosOriginais.filter((item) => {
+    this.dados = this.dadosOriginais.filter((item: any) => {
       return Object.keys(this.filters).every((key) => {
         return item[key].toString().toLowerCase().includes(this.filters[key]);
       });

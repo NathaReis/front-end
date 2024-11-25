@@ -81,7 +81,6 @@ export class UserService {
   }
 
   update(userDto: UserDto): Observable<UserDto> {
-    console.log("🚀 ~ file: user.service.ts:84 ~ UserService ~ update ~ userDto:", userDto);
     return this.http
       .put<UserDto>(this.apiUrl, userDto, { headers: this.getHeaders() })
       .pipe(

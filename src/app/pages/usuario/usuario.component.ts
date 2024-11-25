@@ -14,6 +14,8 @@ import { ToastModule } from "primeng/toast";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { DropdownModule } from 'primeng/dropdown';
 import { Router } from "@angular/router";
+import { WebSocketService } from '../../services/web-socket.service';
+
 
 @Component({
   selector: 'app-usuario',
@@ -55,6 +57,7 @@ export class UsuarioComponent {
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
     private router: Router,
+    private webSocketService: WebSocketService
   ) {
     this.usuarioForm = this.fb.group({
       id: [null],

@@ -17,6 +17,8 @@ import { EquipamentoService } from '../../services/equipamento.service';
 import { DropdownModule } from 'primeng/dropdown';
 import { UserService } from "../../services/user.service";
 import { CalendarModule } from 'primeng/calendar';
+import { WebSocketService } from '../../services/web-socket.service';
+
 
 @Component({
   selector: 'app-ordem-servico',
@@ -59,7 +61,8 @@ export class OrdemServicoComponent implements OnInit {
     private equipamentService: EquipamentoService,
     private messageService: MessageService,
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    private webSocketService: WebSocketService
   ) {
     this.ordemServicoForm = this.fb.group({
       id: [null],

@@ -1,10 +1,6 @@
 import { Injectable } from '@angular/core';
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HttpHeaders,
-} from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { Observable, throwError, Subject } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 
@@ -13,6 +9,8 @@ import { AuthService } from './auth.service';
 })
 export class WebSocketService {
   private apiUrl = 'https://devterrasa.com/java/v1/public/notification/';
+  private socket: WebSocket | undefined;
+  private notificationSubject: Subject<string> = new Subject<string>();
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
@@ -61,5 +59,19 @@ export class WebSocketService {
           }
         })
       );
+  }
+
+  connect(): void {
+    this.socket = new WebSocket('wss://devterrasa.com/java/v1/public/notification/ws');
+    this.socket.onmessage = (event) => {
+      this.notificationSubject.next(event.data);
+    };
+    this.socket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+  }
+
+  getNotifications(): Observable<string> {
+    return this.notificationSubject.asObservable();
   }
 }

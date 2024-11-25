@@ -16,6 +16,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { CheckboxModule } from 'primeng/checkbox';
 import { Router } from '@angular/router';
+import { WebSocketService } from '../../services/web-socket.service';
 
 @Component({
   selector: 'app-relatorio',
@@ -48,7 +49,8 @@ export class RelatorioComponent {
     private fb: FormBuilder,
     private registroService: RegistroService,
     private messageService: MessageService,
-    private router: Router
+    private router: Router,
+    private webSocketService: WebSocketService
   ) {
     this.relatorioForm = this.fb.group({
       startDate: [null, Validators.required],

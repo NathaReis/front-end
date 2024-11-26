@@ -16,7 +16,6 @@ import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { CheckboxModule } from 'primeng/checkbox';
 import { Router } from '@angular/router';
-import { WebSocketService } from '../../services/web-socket.service';
 
 @Component({
   selector: 'app-relatorio',
@@ -50,7 +49,6 @@ export class RelatorioComponent {
     private registroService: RegistroService,
     private messageService: MessageService,
     private router: Router,
-    private webSocketService: WebSocketService
   ) {
     this.relatorioForm = this.fb.group({
       startDate: [null, Validators.required],
@@ -75,18 +73,6 @@ export class RelatorioComponent {
       });
       this.router.navigate(['/inicio']);
     }
-    this.WebSocket();
-  }
-
-  WebSocket() {
-    this.webSocketService.connect();
-    this.webSocketService.getNotifications().subscribe((notification) => {
-      this.messageService.add({
-        severity: 'info',
-        summary: 'Nova Notificação',
-        detail: notification,
-      });
-    });
   }
 
   onSubmit() {

@@ -17,7 +17,6 @@ import { EquipamentoService } from '../../services/equipamento.service';
 import { DropdownModule } from 'primeng/dropdown';
 import { UserService } from "../../services/user.service";
 import { CalendarModule } from 'primeng/calendar';
-import { WebSocketService } from '../../services/web-socket.service';
 import { WorkOrderDto, WorkOrderCreateDto } from './ordem-servico.model';
 import { EquipamentDto } from '../equipamento/equipamento.model';
 import { UserDto } from '../usuario/usuario.model';
@@ -64,7 +63,6 @@ export class OrdemServicoComponent implements OnInit {
     private messageService: MessageService,
     private router: Router,
     private userService: UserService,
-    private webSocketService: WebSocketService
   ) {
     this.ordemServicoForm = this.fb.group({
       id: [null],
@@ -124,18 +122,6 @@ export class OrdemServicoComponent implements OnInit {
     this.refreshData();
     this.getEquipament();
     this.getUser();
-    this.WebSocket();
-  }
-
-  WebSocket() {
-    this.webSocketService.connect();
-    this.webSocketService.getNotifications().subscribe((notification) => {
-      this.messageService.add({
-        severity: 'info',
-        summary: 'Nova Notificação',
-        detail: notification,
-      });
-    });
   }
   
   onEquipamentChange(event: any) {

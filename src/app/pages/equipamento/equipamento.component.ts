@@ -13,7 +13,6 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { Router } from '@angular/router';
-import { WebSocketService } from '../../services/web-socket.service';
 import { EquipamentDto } from './equipamento.model';
 
 @Component({
@@ -55,7 +54,6 @@ export class EquipamentoComponent {
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
     private router: Router,
-    private webSocketService: WebSocketService
   ) {
     this.equipamentoForm = this.fb.group({
       id: [null],
@@ -82,7 +80,6 @@ export class EquipamentoComponent {
 
   ngOnInit() {
     this.getEquipamento();
-    this.WebSocket();
   }
 
   getEquipamento() {
@@ -95,17 +92,6 @@ export class EquipamentoComponent {
         console.error(error);
       }
     );
-  }
-
-  WebSocket() {
-    this.webSocketService.connect();
-    this.webSocketService.getNotifications().subscribe((notification) => {
-      this.messageService.add({
-        severity: 'info',
-        summary: 'Nova Notificação',
-        detail: notification,
-      });
-    });
   }
 
   openAddDialog() {

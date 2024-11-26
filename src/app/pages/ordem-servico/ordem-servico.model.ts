@@ -53,3 +53,12 @@ export interface WorkOrderCreateDto {
   hourMeter?: string;
   requestedServicesDescription?: string;
 }
+
+export interface WorkOrderLogDto {
+  id: number;
+  workOrder: WorkOrderDto;
+  description: string; // tamanho 1000
+  log_type: string; // tamanho 30
+  logDate: string;
+  actionUser: UserDto;
+}

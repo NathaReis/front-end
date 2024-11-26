@@ -33,7 +33,7 @@ export class OrdemServicoService {
       errorMessage = `Erro ${error.status}: ${error.message}`;
     }
     console.error('An error occurred:', errorMessage);
-    return throwError(errorMessage);
+    return throwError(() => new Error(errorMessage));
   }
 
   handle401Error(request: () => Observable<any>): Observable<any> {
@@ -47,13 +47,13 @@ export class OrdemServicoService {
     );
   }
 
-  getWorkOrder(id: number): Observable<WorkOrderDto> {
+  getOrdemServicoId(id: number): Observable<WorkOrderDto> {
     return this.http.get<WorkOrderDto>(`${this.apiUrl}${id}`, {
       headers: this.getHeaders(),
     }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
-          return this.handle401Error(() => this.getWorkOrder(id));
+          return this.handle401Error(() => this.getOrdemServicoId(id));
         } else {
           return this.handleError(error);
         }
@@ -61,13 +61,13 @@ export class OrdemServicoService {
     );
   }
 
-  list(): Observable<WorkOrderDto[]> {
+  getAllOrdemServico(): Observable<WorkOrderDto[]> {
     return this.http.get<WorkOrderDto[]>(`${this.apiUrl}`, {
       headers: this.getHeaders(),
     }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
-          return this.handle401Error(() => this.list());
+          return this.handle401Error(() => this.getAllOrdemServico());
         } else {
           return this.handleError(error);
         }
@@ -75,13 +75,13 @@ export class OrdemServicoService {
     );
   }
 
-  create(dto: WorkOrderCreateDto): Observable<WorkOrderCreateDto> {
+  createOrdemServico(dto: WorkOrderCreateDto): Observable<WorkOrderCreateDto> {
     return this.http.post<WorkOrderCreateDto>(`${this.apiUrl}`, dto, {
       headers: this.getHeaders(),
     }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
-          return this.handle401Error(() => this.create(dto));
+          return this.handle401Error(() => this.createOrdemServico(dto));
         } else {
           return this.handleError(error);
         }
@@ -89,13 +89,13 @@ export class OrdemServicoService {
     );
   }
 
-  update(dto: WorkOrderDto): Observable<WorkOrderDto> {
+  updateOrdemServico(dto: WorkOrderDto): Observable<WorkOrderDto> {
     return this.http.put<WorkOrderDto>(`${this.apiUrl}`, dto, {
       headers: this.getHeaders(),
     }).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
-          return this.handle401Error(() => this.update(dto));
+          return this.handle401Error(() => this.updateOrdemServico(dto));
         } else {
           return this.handleError(error);
         }

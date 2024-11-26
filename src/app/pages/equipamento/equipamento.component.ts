@@ -50,7 +50,7 @@ export class EquipamentoComponent {
 
   constructor(
     private fb: FormBuilder,
-    private service: EquipamentoService,
+    private equipamentoService: EquipamentoService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
     private router: Router,
@@ -83,7 +83,7 @@ export class EquipamentoComponent {
   }
 
   getEquipamento() {
-    this.service.list().subscribe(
+    this.equipamentoService.getAllEquipamento().subscribe(
       (response) => {
         this.dados = response;
         this.dadosOriginais = [...response];
@@ -125,7 +125,7 @@ export class EquipamentoComponent {
 
   saveItem() {
     if (this.isEditMode) {
-      this.service.update(this.selectedItem).subscribe(
+      this.equipamentoService.updateEquipamento(this.selectedItem).subscribe(
         (response) => {
           const index = this.dados.findIndex(
             (d) => d.id === this.selectedItem.id
@@ -150,7 +150,7 @@ export class EquipamentoComponent {
         }
       );
     } else {
-      this.service.create(this.selectedItem).subscribe(
+      this.equipamentoService.createEquipamento(this.selectedItem).subscribe(
         (response) => {
           this.dados.push(response);
           this.dadosOriginais.push(response);
@@ -199,7 +199,7 @@ export class EquipamentoComponent {
 
   deleteItem(item: EquipamentDto) {
     if (typeof item.id === 'number' && item.id !== null && item.id !== undefined) {
-      this.service.delete(item.id).subscribe(
+      this.equipamentoService.deleteEquipamento(item.id).subscribe(
         () => {
           this.dados = this.dados.filter((d) => d.id !== item.id);
           this.dadosOriginais = this.dadosOriginais.filter(
@@ -240,7 +240,7 @@ export class EquipamentoComponent {
   }
 
   refreshData() {
-    this.service.list().subscribe(
+    this.equipamentoService.getAllEquipamento().subscribe(
       (response) => {
         this.dados = response;
         this.dadosOriginais = [...response];

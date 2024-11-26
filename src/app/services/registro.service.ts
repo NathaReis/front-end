@@ -32,7 +32,7 @@ export class RegistroService {
       errorMessage = `Erro ${error.status}: ${error.message}`;
     }
     console.error('An error occurred:', errorMessage);
-    return throwError(errorMessage);
+    return throwError(() => new Error(errorMessage));
   }
 
   private handle401Error(request: () => Observable<any>): Observable<any> {
@@ -46,7 +46,7 @@ export class RegistroService {
     );
   }
 
-  downloadExcelReport(): Observable<Blob> {
+  getRelatorioExcel(): Observable<Blob> {
     return this.http
       .get(`${this.apiUrl}excel`, {
         headers: this.getHeaders(),
@@ -55,7 +55,7 @@ export class RegistroService {
       .pipe(
         catchError((error) => {
           if (error.status === 401) {
-            return this.handle401Error(() => this.downloadExcelReport());
+            return this.handle401Error(() => this.getRelatorioExcel());
           } else {
             return this.handleError(error);
           }
@@ -63,7 +63,7 @@ export class RegistroService {
       );
   }
 
-  downloadPdfReport(): Observable<Blob> {
+  getRelatorioPdf(): Observable<Blob> {
     return this.http
       .get(`${this.apiUrl}pdf`, {
         headers: this.getHeaders(),
@@ -72,7 +72,7 @@ export class RegistroService {
       .pipe(
         catchError((error) => {
           if (error.status === 401) {
-            return this.handle401Error(() => this.downloadPdfReport());
+            return this.handle401Error(() => this.getRelatorioExcel());
           } else {
             return this.handleError(error);
           }

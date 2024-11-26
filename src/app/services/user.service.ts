@@ -37,7 +37,7 @@ export class UserService {
       errorMessage = `Erro ${error.status}: ${error.message}`;
     }
     console.error('An error occurred:', errorMessage);
-    return throwError(errorMessage);
+    return throwError(() => new Error(errorMessage));
   }
 
   private handle401Error(request: () => Observable<any>): Observable<any> {
@@ -51,12 +51,12 @@ export class UserService {
     );
   }
 
-  list(search?: string): Observable<UserDto[]> {
+  getAllUsuarios(search?: string): Observable<UserDto[]> {
     const url = search ? `${this.apiUrl}?search=${search}` : this.apiUrl;
     return this.http.get<UserDto[]>(url, { headers: this.getHeaders() }).pipe(
       catchError((error) => {
         if (error.status === 401) {
-          return this.handle401Error(() => this.list(search));
+          return this.handle401Error(() => this.getAllUsuarios(search));
         } else {
           return this.handleError(error);
         }
@@ -64,7 +64,7 @@ export class UserService {
     );
   }
 
-  register(registerDto: RegisterDto): Observable<UserDto> {
+  createUsuario(registerDto: RegisterDto): Observable<UserDto> {
     return this.http
       .post<UserDto>(`${this.apiUrl}register`, registerDto, {
         headers: this.getHeaders(),
@@ -72,7 +72,7 @@ export class UserService {
       .pipe(
         catchError((error) => {
           if (error.status === 401) {
-            return this.handle401Error(() => this.register(registerDto));
+            return this.handle401Error(() => this.createUsuario(registerDto));
           } else {
             return this.handleError(error);
           }
@@ -80,13 +80,13 @@ export class UserService {
       );
   }
 
-  update(userDto: UserDto): Observable<UserDto> {
+  updateUsuario(userDto: UserDto): Observable<UserDto> {
     return this.http
       .put<UserDto>(this.apiUrl, userDto, { headers: this.getHeaders() })
       .pipe(
         catchError((error) => {
           if (error.status === 401) {
-            return this.handle401Error(() => this.update(userDto));
+            return this.handle401Error(() => this.updateUsuario(userDto));
           } else {
             return this.handleError(error);
           }
@@ -94,13 +94,13 @@ export class UserService {
       );
   }
 
-  delete(id: number): Observable<void> {
+  deleteUsuario(id: number): Observable<void> {
     return this.http
       .delete<void>(`${this.apiUrl}${id}`, { headers: this.getHeaders() })
       .pipe(
         catchError((error) => {
           if (error.status === 401) {
-            return this.handle401Error(() => this.delete(id));
+            return this.handle401Error(() => this.deleteUsuario(id));
           } else {
             return this.handleError(error);
           }
@@ -108,13 +108,13 @@ export class UserService {
       );
   }
 
-  listRoles(): Observable<string[]> {
+  getAllFuncoes(): Observable<string[]> {
     return this.http
       .get<string[]>(`${this.apiUrl}roles`, { headers: this.getHeaders() })
       .pipe(
         catchError((error) => {
           if (error.status === 401) {
-            return this.handle401Error(() => this.listRoles());
+            return this.handle401Error(() => this.getAllFuncoes());
           } else {
             return this.handleError(error);
           }
@@ -122,13 +122,13 @@ export class UserService {
       );
   }
 
-  updateRole(updateDto: UserRoleUpdateDto): Observable<UserDto> {
+  updateFuncao(updateDto: UserRoleUpdateDto): Observable<UserDto> {
     return this.http
       .put<UserDto>(`${this.apiUrl}role`, updateDto, { headers: this.getHeaders() })
       .pipe(
         catchError((error) => {
           if (error.status === 401) {
-            return this.handle401Error(() => this.updateRole(updateDto));
+            return this.handle401Error(() => this.updateFuncao(updateDto));
           } else {
             return this.handleError(error);
           }
@@ -136,13 +136,13 @@ export class UserService {
       );
   }
 
-  listMechanics(): Observable<UserDto[]> {
+  getMecanicos(): Observable<UserDto[]> {
     return this.http
       .get<UserDto[]>(`${this.apiUrl}mechanics`, { headers: this.getHeaders() })
       .pipe(
         catchError((error) => {
           if (error.status === 401) {
-            return this.handle401Error(() => this.listMechanics());
+            return this.handle401Error(() => this.getMecanicos());
           } else {
             return this.handleError(error);
           }

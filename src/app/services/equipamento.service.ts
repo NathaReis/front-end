@@ -33,7 +33,7 @@ export class EquipamentoService {
       errorMessage = `Erro ${error.status}: ${error.message}`;
     }
     console.error('An error occurred:', errorMessage);
-    return throwError(errorMessage);
+    return throwError(() => new Error(errorMessage));
   }
 
   private handle401Error(request: () => Observable<any>): Observable<any> {
@@ -47,7 +47,7 @@ export class EquipamentoService {
     );
   }
 
-  getEquipament(id: number): Observable<EquipamentDto> {
+  getEquipamentoId(id: number): Observable<EquipamentDto> {
     return this.http
       .get<EquipamentDto>(`${this.apiUrl}${id}`, {
         headers: this.getHeaders(),
@@ -55,7 +55,7 @@ export class EquipamentoService {
       .pipe(
         catchError((error) => {
           if (error.status === 401) {
-            return this.handle401Error(() => this.getEquipament(id));
+            return this.handle401Error(() => this.getEquipamentoId(id));
           } else {
             return this.handleError(error);
           }
@@ -63,7 +63,7 @@ export class EquipamentoService {
       );
   }
 
-  list(): Observable<EquipamentDto[]> {
+  getAllEquipamento(): Observable<EquipamentDto[]> {
     return this.http
       .get<EquipamentDto[]>(`${this.apiUrl}`, {
         headers: this.getHeaders(),
@@ -71,7 +71,7 @@ export class EquipamentoService {
       .pipe(
         catchError((error) => {
           if (error.status === 401) {
-            return this.handle401Error(() => this.list());
+            return this.handle401Error(() => this.getAllEquipamento());
           } else {
             return this.handleError(error);
           }
@@ -79,7 +79,7 @@ export class EquipamentoService {
       );
   }
 
-  create(dto: EquipamentDto): Observable<EquipamentDto> {
+  createEquipamento(dto: EquipamentDto): Observable<EquipamentDto> {
     return this.http
       .post<EquipamentDto>(`${this.apiUrl}`, dto, {
         headers: this.getHeaders(),
@@ -87,7 +87,7 @@ export class EquipamentoService {
       .pipe(
         catchError((error) => {
           if (error.status === 401) {
-            return this.handle401Error(() => this.create(dto));
+            return this.handle401Error(() => this.createEquipamento(dto));
           } else {
             return this.handleError(error);
           }
@@ -95,7 +95,7 @@ export class EquipamentoService {
       );
   }
 
-  update(dto: EquipamentDto): Observable<EquipamentDto> {
+  updateEquipamento(dto: EquipamentDto): Observable<EquipamentDto> {
     return this.http
       .put<EquipamentDto>(`${this.apiUrl}`, dto, {
         headers: this.getHeaders(),
@@ -103,7 +103,7 @@ export class EquipamentoService {
       .pipe(
         catchError((error) => {
           if (error.status === 401) {
-            return this.handle401Error(() => this.update(dto));
+            return this.handle401Error(() => this.updateEquipamento(dto));
           } else {
             return this.handleError(error);
           }
@@ -111,7 +111,7 @@ export class EquipamentoService {
       );
   }
 
-  delete(id: number): Observable<void> {
+  deleteEquipamento(id: number): Observable<void> {
     return this.http
       .delete<void>(`${this.apiUrl}${id}`, {
         headers: this.getHeaders(),
@@ -119,7 +119,7 @@ export class EquipamentoService {
       .pipe(
         catchError((error) => {
           if (error.status === 401) {
-            return this.handle401Error(() => this.delete(id));
+            return this.handle401Error(() => this.deleteEquipamento(id));
           } else {
             return this.handleError(error);
           }
@@ -127,7 +127,7 @@ export class EquipamentoService {
       );
   }
 
-  getEquipamentByQrCode(qrCode: string): Observable<EquipamentDto> {
+  getEquipamentoQrCode(qrCode: string): Observable<EquipamentDto> {
     return this.http
       .get<EquipamentDto>(`${this.apiUrl}qr-code/${qrCode}`, {
         headers: this.getHeaders(),
@@ -136,7 +136,7 @@ export class EquipamentoService {
         catchError((error) => {
           if (error.status === 401) {
             return this.handle401Error(() =>
-              this.getEquipamentByQrCode(qrCode)
+              this.getEquipamentoQrCode(qrCode)
             );
           } else {
             return this.handleError(error);

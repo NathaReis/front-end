@@ -97,7 +97,7 @@ export class RelatorioComponent {
   }
 
   downloadExcelReport() {
-    this.registroService.downloadExcelReport().subscribe(
+    this.registroService.getRelatorioExcel().subscribe(
       (response) => {
         const url = window.URL.createObjectURL(response);
         const a = document.createElement('a');
@@ -123,7 +123,7 @@ export class RelatorioComponent {
   }
 
   downloadPdfReport() {
-    this.registroService.downloadPdfReport().subscribe(
+    this.registroService.getRelatorioPdf().subscribe(
       (response) => {
         const url = window.URL.createObjectURL(response);
         const a = document.createElement('a');

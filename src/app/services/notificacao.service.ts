@@ -28,7 +28,7 @@ export class WebSocketService {
       errorMessage = `Erro ${error.status}: ${error.message}`;
     }
     console.error('An error occurred:', errorMessage);
-    return throwError(errorMessage);
+    return throwError(() => new Error(errorMessage));
   }
 
   private handle401Error(request: () => Observable<any>): Observable<any> {
@@ -42,7 +42,7 @@ export class WebSocketService {
     );
   }
 
-  listNotificationsByUser(): Observable<[]> {
+  getNotificacao(): Observable<[]> {
     return this.http
       .get<[]>(`${this.apiUrl}`, {
         headers: this.getHeaders(),
@@ -50,7 +50,7 @@ export class WebSocketService {
       .pipe(
         catchError((error) => {
           if (error.status === 401) {
-            return this.handle401Error(() => this.listNotificationsByUser());
+            return this.handle401Error(() => this.getNotificacao());
           } else {
             return this.handleError(error);
           }
@@ -58,7 +58,7 @@ export class WebSocketService {
       );
   }
 
-  readNotification(id: number): Observable<void> {
+  getNotificacaoId(id: number): Observable<void> {
     return this.http
       .get<void>(`${this.apiUrl}${id}`, {
         headers: this.getHeaders(),
@@ -66,7 +66,7 @@ export class WebSocketService {
       .pipe(
         catchError((error) => {
           if (error.status === 401) {
-            return this.handle401Error(() => this.readNotification(id));
+            return this.handle401Error(() => this.getNotificacaoId(id));
           } else {
             return this.handleError(error);
           }

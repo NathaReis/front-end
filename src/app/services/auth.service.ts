@@ -32,7 +32,7 @@ export class AuthService {
       errorMessage = `Erro ${error.status}: ${error.message}`;
     }
     console.error('An error occurred:', errorMessage);
-    return throwError(errorMessage);
+    return throwError(() => new Error(errorMessage));
   };
 
   login(authenticationDto: AuthenticationDto): Observable<any> {

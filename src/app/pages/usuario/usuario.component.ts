@@ -58,7 +58,7 @@ export class UsuarioComponent {
 
   constructor(
     private fb: FormBuilder,
-    private service: UserService,
+    private usuarioService: UserService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
     private router: Router,
@@ -87,7 +87,7 @@ export class UsuarioComponent {
       this.router.navigate(['/inicio']);
     }
     
-    this.service.list().subscribe(
+    this.usuarioService.getAllUsuarios().subscribe(
       (response) => {
         this.dados = response;
         this.dadosOriginais = [...response];
@@ -97,7 +97,7 @@ export class UsuarioComponent {
       }
     );
 
-    this.service.listRoles().subscribe(
+    this.usuarioService.getAllFuncoes().subscribe(
       (response) => {
         this.roles = response;
       },
@@ -138,7 +138,7 @@ export class UsuarioComponent {
 
   saveItem() {
     if (this.isEditMode) {
-      this.service.update(this.selectedItem).subscribe(
+      this.usuarioService.updateUsuario(this.selectedItem).subscribe(
         (response) => {
           const index = this.dados.findIndex(
             (d) => d.id === this.selectedItem.id
@@ -169,7 +169,7 @@ export class UsuarioComponent {
         password: this.selectedItem.password!,
         role: this.selectedItem.role,
       };
-      this.service.register(registerDto).subscribe(
+      this.usuarioService.createUsuario(registerDto).subscribe(
         (response) => {
           this.dados.push(response);
           this.dadosOriginais.push(response);
@@ -217,7 +217,7 @@ export class UsuarioComponent {
   }
 
   deleteItem(item: UserDto) {
-    this.service.delete(item.id).subscribe(
+    this.usuarioService.deleteUsuario(item.id).subscribe(
       () => {
         this.dados = this.dados.filter((d) => d.id !== item.id);
         this.dadosOriginais = this.dadosOriginais.filter((d) => d.id !== item.id);
@@ -249,7 +249,7 @@ export class UsuarioComponent {
   }
 
   refreshData() {
-    this.service.list().subscribe(
+    this.usuarioService.getAllUsuarios().subscribe(
       (response) => {
         this.dados = response;
         this.dadosOriginais = [...response];

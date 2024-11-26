@@ -59,10 +59,10 @@ export class OrdemServicoComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private ordemServicoService: OrdemServicoService,
-    private equipamentService: EquipamentoService,
+    private equipamentoService: EquipamentoService,
     private messageService: MessageService,
     private router: Router,
-    private userService: UserService,
+    private usuarioService: UserService,
   ) {
     this.ordemServicoForm = this.fb.group({
       id: [null],
@@ -133,7 +133,7 @@ export class OrdemServicoComponent implements OnInit {
   }
 
   refreshData() {
-    this.ordemServicoService.list().subscribe(
+    this.ordemServicoService.getAllOrdemServico().subscribe(
       (data) => {
         this.dados = data;
       },
@@ -144,7 +144,7 @@ export class OrdemServicoComponent implements OnInit {
   }
 
   getEquipament() {
-    this.equipamentService.list().subscribe(
+    this.equipamentoService.getAllEquipamento().subscribe(
       (response) => {
         this.equipamento = response;
       },
@@ -155,7 +155,7 @@ export class OrdemServicoComponent implements OnInit {
   }
 
   getUser() {
-    this.userService.list().subscribe(
+    this.usuarioService.getAllUsuarios().subscribe(
       (response) => {
         this.user = response;
       },

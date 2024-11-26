@@ -1,38 +1,27 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { TableModule } from 'primeng/table';
-import { MenuComponent } from '../menu/menu.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+
 import { CardModule } from 'primeng/card';
-import { ButtonModule } from 'primeng/button';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DialogModule } from 'primeng/dialog';
-import { InputTextModule } from 'primeng/inputtext';
-import { RegistroService } from '../../services/registro.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import { CheckboxModule } from 'primeng/checkbox';
-import { Router } from '@angular/router';
+
+import { MenuComponent } from '../menu/menu.component';
+import { RegistroService } from '../../services/registro.service';
 
 @Component({
   selector: 'app-relatorio',
   standalone: true,
   imports: [
-    //TableModule,
     CardModule,
-    //CommonModule,
     MenuComponent,
-    //ButtonModule,
-    //DialogModule,
-    //FormsModule,
     ReactiveFormsModule,
-    //InputTextModule,
     ToastModule,
     ConfirmDialogModule,
-    //DropdownModule,
     CalendarModule,
     CheckboxModule,
   ],
@@ -77,7 +66,7 @@ export class RelatorioComponent {
 
   onSubmit() {
     if (this.relatorioForm.valid) {
-      const formData = this.relatorioForm.value;
+      // const formData = this.relatorioForm.value;
       this.messageService.add({
         severity: 'success',
         summary: 'Sucesso',
@@ -97,8 +86,8 @@ export class RelatorioComponent {
   }
 
   downloadExcelReport() {
-    this.registroService.downloadExcelReport().subscribe(
-      (response) => {
+    this.registroService.downloadExcelReport().subscribe({
+      next: (response) => {
         const url = window.URL.createObjectURL(response);
         const a = document.createElement('a');
         a.href = url;
@@ -111,7 +100,7 @@ export class RelatorioComponent {
           detail: 'Relatório Excel baixado com sucesso',
         });
       },
-      (error) => {
+      error: (error) => {
         console.error(error);
         this.messageService.add({
           severity: 'error',
@@ -119,12 +108,12 @@ export class RelatorioComponent {
           detail: 'Erro ao baixar relatório Excel',
         });
       }
-    );
+    });
   }
 
   downloadPdfReport() {
-    this.registroService.downloadPdfReport().subscribe(
-      (response) => {
+    this.registroService.downloadPdfReport().subscribe({
+      next: (response) => {
         const url = window.URL.createObjectURL(response);
         const a = document.createElement('a');
         a.href = url;
@@ -137,7 +126,7 @@ export class RelatorioComponent {
           detail: 'Relatório PDF baixado com sucesso',
         });
       },
-      (error) => {
+      error: (error) => {
         console.error(error);
         this.messageService.add({
           severity: 'error',
@@ -145,6 +134,6 @@ export class RelatorioComponent {
           detail: 'Erro ao baixar relatório PDF',
         });
       }
-    );
+    });
   }
 }
